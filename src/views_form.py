@@ -1,6 +1,6 @@
 # Formulario de voluntario
 
-from data_base_models import get_provincias, get_cantones_by_provincia
+from data_base_models import get_provincias, get_cantones_by_provincia, get_parroquias_by_canton_and_tipo
 import flet as ft
 
 def main(page: ft.Page):
@@ -12,10 +12,11 @@ def main(page: ft.Page):
     # BASE
     # ---------------------------------------------------------
     consentimiento_chk = ft.Checkbox(
-        label=("Declaro que he sido informado(a) sobre el objetivo de esta encuesta y "
-               "doy mi consentimiento para proporcionar mis datos personales."),
-        value=False
+        label="Declaro que he sido informado(a) sobre el objetivo de esta encuesta y doy mi consentimiento para proporcionar mis datos personales.",
+        value=False,
+        width=380
     )
+
 
     # Dropdowns
     ddl_provincia = ft.Dropdown(
@@ -50,6 +51,7 @@ def main(page: ft.Page):
     # ---------------------------------------------------------
     # EVENTO — CAMBIAR PROVINCIA
     # ---------------------------------------------------------
+
     def provincia_changed(e):
         provincia = ddl_provincia.value
         cantones = get_cantones_by_provincia(provincia)
@@ -63,6 +65,41 @@ def main(page: ft.Page):
         page.update()
 
     ddl_provincia.on_change = provincia_changed
+
+
+    # ---------------------------------------------------------
+    # EVENTO — CAMBIAR CANTÓN
+    # ---------------------------------------------------------
+    def canton_changed(e):
+        ddl_tipo_parroquia.disabled = False
+        ddl_tipo_parroquia.value = None
+
+        ddl_parroquia.disabled = True
+        ddl_parroquia.options = []
+        ddl_parroquia.value = None
+
+        page.update()
+
+    ddl_canton.on_change = canton_changed
+
+
+    # ---------------------------------------------------------
+    # EVENTO — CAMBIAR TIPO PARROQUIA (Urbano/Rural)
+    # ---------------------------------------------------------
+    def tipo_parroquia_changed(e):
+        canton = ddl_canton.value
+        tipo = ddl_tipo_parroquia.value
+
+        parroquias = get_parroquias_by_canton_and_tipo(canton, tipo)
+
+        ddl_parroquia.options = [ft.dropdown.Option(p) for p in parroquias] 
+        # print(ddl_parroquia)
+        ddl_parroquia.disabled = False
+        ddl_parroquia.value = None
+
+        page.update()
+
+    ddl_tipo_parroquia.on_change = tipo_parroquia_changed
 
     # ---------------------------------------------------------
     # CONTENEDOR DEL FORMULARIO COMPLETO (oculto al inicio)
