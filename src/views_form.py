@@ -1,6 +1,6 @@
 # Formulario de voluntario
 
-from database.models import get_provincias, get_cantones_by_provincia
+from data_base_models import get_provincias, get_cantones_by_provincia
 import flet as ft
 
 def main(page: ft.Page):

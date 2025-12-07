@@ -1,4 +1,4 @@
-from database.connection import get_connection
+from data_base_connection import get_connection
 
 # ID de catálogo para provincias
 CAT_PROVINCIAS = 18
