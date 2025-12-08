@@ -103,15 +103,51 @@ def familiares_view(page: ft.Page):
     )
     edad = ft.TextField(label="Edad", width=260)
 
+
+    def on_discapacidad_change(e):
+        if discapacidad.value == "Sí":
+            enfermedad.disabled = False
+        else:
+            enfermedad.disabled = True
+            enfermedad.value = ""  # opcional: limpiar
+        enfermedad.update()
+
     discapacidad = ft.Dropdown(
-        label="Discapacidad", width=260,
-        options=[ft.dropdown.Option("Sí"), ft.dropdown.Option("No")]
+        label="Discapacidad",
+        width=260,
+        options=[ft.dropdown.Option("Sí"), ft.dropdown.Option("No")],
+        on_change=on_discapacidad_change
     )
 
-    enfermedad = ft.TextField(label="Enfermedad Catastrófica", value="Ninguna", width=260)
-    trabaja = ft.Dropdown(label="¿Trabaja?", width=260,
-                          options=[ft.dropdown.Option("Sí"), ft.dropdown.Option("No")])
-    ocupacion = ft.TextField(label="Ocupación", width=260)
+    enfermedad = ft.TextField(
+        label="Enfermedad Catastrófica",
+        value="Ninguna",
+        width=260,
+        disabled=True  # comienza desactivado
+    )
+
+    def on_trabaja_change(e):
+        if trabaja.value == "Sí":
+            ocupacion.disabled = False
+        else:
+            ocupacion.disabled = True
+            ocupacion.value = ""  # opcional
+        ocupacion.update()
+
+    trabaja = ft.Dropdown(
+        label="¿Trabaja?",
+        width=260,
+        options=[ft.dropdown.Option("Sí"), ft.dropdown.Option("No")],
+        on_change=on_trabaja_change
+    )
+
+    ocupacion = ft.TextField(
+        label="Ocupación",
+        value="Ninguna",
+        width=260,
+        disabled=True
+    )
+    
     ingreso = ft.TextField(label="Ingreso Mensual", width=260)
     parentesco = ft.TextField(label="Parentesco", width=260)
 
