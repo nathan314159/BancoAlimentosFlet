@@ -4,6 +4,10 @@ from data_base_connection import get_connection
 CAT_PROVINCIAS = 18
 CAT_CANTONES = 19
 CAT_PARROQUIAS = 20
+CAT_ETNIAS = 34
+CAT_GENERO = 35
+CAT_NIVEL_EDUCACION = 36
+CAT_ESTADO_CIVIL = 37
 
 def get_provincias():
     conn = get_connection() # gets the coneccion from database
@@ -69,4 +73,63 @@ def get_parroquias_by_canton_and_tipo(canton_nombre, tipo):
 
     return [r[0] for r in rows]
 
+def get_etnia():
+    conn = get_connection() # gets the coneccion from database
+    cursor = conn.cursor() # this has all of the methods 
+    cursor.execute(
+        "SELECT itc_nombre FROM tbl_item_catalogo WHERE id_catalogo = ?" , # executes this query that says return 
+        # “I will put a parameter here later.” ?
+        (CAT_ETNIAS,)  # This is a tuple containing the actual value for the question mark. CAT_ETNIAS=34
+    )
+    rows = cursor.fetchall() #  Gets all the resulting rows from the query as a list of tuples
+    conn.close() # Closes the database connection
+    
+    lista = []
+    for r in rows: # Iterates the rows; each row is a tuple like ("Carchi",)
+        lista.append(r[0]) # gets the only column and converts it to a string not a tuple anymore 
+    return lista # and appends it to the list
 
+def get_genero():
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute(
+        "SELECT itc_nombre FROM tbl_item_catalogo WHERE id_catalogo = ?" ,
+        (CAT_GENERO,)
+    )
+    rows = cursor.fetchall()
+    conn.close()
+    
+    lista = []
+    for r in rows:
+        lista.append(r[0])
+    return lista 
+
+def get_educacion():
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute(
+        "SELECT itc_nombre FROM tbl_item_catalogo WHERE id_catalogo = ?" ,
+        (CAT_NIVEL_EDUCACION,)
+    )
+    rows = cursor.fetchall()
+    conn.close()
+    
+    lista = []
+    for r in rows:
+        lista.append(r[0])
+    return lista
+
+def get_estado_civil():
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute(
+        "SELECT itc_nombre FROM tbl_item_catalogo WHERE id_catalogo = ?" ,
+        (CAT_ESTADO_CIVIL,)
+    )
+    rows = cursor.fetchall()
+    conn.close()
+    
+    lista = []
+    for r in rows:
+        lista.append(r[0])
+    return lista
