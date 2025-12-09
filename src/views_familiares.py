@@ -38,6 +38,7 @@ def familiares_view(page: ft.Page):
 
     page.overlay.clear()
 
+    # -------- TABLA PRINCIPAL --------
     tabla_familiares = ft.DataTable(
         columns=[
             ft.DataColumn(ft.Text("Nombres")),
@@ -64,10 +65,13 @@ def familiares_view(page: ft.Page):
     # -------- CAMPOS --------
     nombres = ft.TextField(label="Nombres", width=260)
     apellidos = ft.TextField(label="Apellidos", width=260)
-    movilidad = ft.Dropdown(label="Movilidad", width=260,
-                            options=[ft.dropdown.Option("Ecuatoriano"),
-                                     ft.dropdown.Option("Extranjero")])
-
+    movilidad = ft.Dropdown(
+        label="Movilidad", width=260,
+        options=[
+            ft.dropdown.Option("Ecuatoriano"),
+            ft.dropdown.Option("Extranjero")
+        ]
+    )
     documento = ft.TextField(label="Documento", width=260, disabled=True)
     celular = ft.TextField(label="Celular", width=260)
 
@@ -77,11 +81,7 @@ def familiares_view(page: ft.Page):
     estado_civil = ft.Dropdown(label="Estado Civil", width=260)
 
     # -------- FECHA NACIMIENTO --------
-    fecha_nacimiento = ft.TextField(
-        label="Fecha Nacimiento",
-        width=260,
-        read_only=True,
-    )
+    fecha_nacimiento = ft.TextField(label="Fecha Nacimiento", width=260, read_only=True)
 
     date_picker = ft.DatePicker(
         on_change=lambda e: (
@@ -89,27 +89,20 @@ def familiares_view(page: ft.Page):
             fecha_nacimiento.update()
         )
     )
-
-    # IMPORTANTE: DatePicker va en overlay
     page.overlay.append(date_picker)
 
-    def abrir_calendario():
-        date_picker.open = True
-        page.update()
-    
     btn_fecha = ft.IconButton(
-    icon=ft.Icons.CALENDAR_MONTH,
-    on_click=lambda e: abrir_calendario()
+        icon=ft.Icons.CALENDAR_MONTH,
+        on_click=lambda e: setattr(date_picker, "open", True) or page.update()
     )
+
     edad = ft.TextField(label="Edad", width=260)
 
-
+    # -------- DISCAPACIDAD --------
     def on_discapacidad_change(e):
-        if discapacidad.value == "Sí":
-            enfermedad.disabled = False
-        else:
-            enfermedad.disabled = True
-            enfermedad.value = ""  # opcional: limpiar
+        enfermedad.disabled = (discapacidad.value == "No")
+        if enfermedad.disabled:
+            enfermedad.value = ""
         enfermedad.update()
 
     discapacidad = ft.Dropdown(
@@ -121,17 +114,16 @@ def familiares_view(page: ft.Page):
 
     enfermedad = ft.TextField(
         label="Enfermedad Catastrófica",
-        value="Ninguna",
         width=260,
-        disabled=True  # comienza desactivado
+        value="Ninguna",
+        disabled=True
     )
 
+    # -------- TRABAJA --------
     def on_trabaja_change(e):
-        if trabaja.value == "Sí":
-            ocupacion.disabled = False
-        else:
-            ocupacion.disabled = True
-            ocupacion.value = ""  # opcional
+        ocupacion.disabled = (trabaja.value == "No")
+        if ocupacion.disabled:
+            ocupacion.value = ""
         ocupacion.update()
 
     trabaja = ft.Dropdown(
@@ -141,13 +133,8 @@ def familiares_view(page: ft.Page):
         on_change=on_trabaja_change
     )
 
-    ocupacion = ft.TextField(
-        label="Ocupación",
-        value="Ninguna",
-        width=260,
-        disabled=True
-    )
-    
+    ocupacion = ft.TextField(label="Ocupación", width=260, disabled=True)
+
     ingreso = ft.TextField(label="Ingreso Mensual", width=260)
     parentesco = ft.TextField(label="Parentesco", width=260)
 
@@ -160,12 +147,10 @@ def familiares_view(page: ft.Page):
 
     # -------- MOVILIDAD --------
     def toggle_tipo_documento(e):
-        mov = movilidad.value
-
         documento.disabled = False
         documento.value = ""
 
-        if mov == "Ecuatoriano":
+        if movilidad.value == "Ecuatoriano":
             documento.placeholder = "Cédula"
             documento.max_length = 10
         else:
@@ -189,10 +174,14 @@ def familiares_view(page: ft.Page):
 
     documento.on_blur = validar_documento
 
-    # -------- AGREGAR FILA --------
+    # -------- AGREGAR A LA TABLA --------
+    def eliminar_fila(row):
+        tabla_familiares.rows.remove(row)
+        page.update()
+
     def add_familiar(e):
 
-        nueva_fila = ft.DataRow(
+        row = ft.DataRow(
             cells=[
                 ft.DataCell(ft.Text(nombres.value)),
                 ft.DataCell(ft.Text(apellidos.value)),
@@ -214,31 +203,44 @@ def familiares_view(page: ft.Page):
                     ft.IconButton(
                         icon=ft.Icons.DELETE,
                         icon_color="red",
-                        on_click=lambda _: eliminar_fila(nueva_fila)
+                        on_click=lambda _: eliminar_fila(row)
                     )
                 ),
             ]
         )
 
-        tabla_familiares.rows.append(nueva_fila)
+        tabla_familiares.rows.append(row)
         page.update()
 
-    def eliminar_fila(row):
-        tabla_familiares.rows.remove(row)
-        page.update()
+    # -------- WRAPPER CON SCROLL --------
+    tabla_scroll = ft.Container(
+        content=ft.Column(
+            controls=[
+                ft.Row(
+                    controls=[tabla_familiares],
+                    scroll=ft.ScrollMode.AUTO  # horizontal
+                )
+            ],
+            scroll=ft.ScrollMode.AUTO          # vertical
+        ),
+        width=1000,
+        height=350,
+        border=ft.border.all(1, "gray"),
+        padding=10
+    )
 
     # -------- LAYOUT FINAL --------
     return ft.Column([
         ft.Text("Datos de familiares", size=20, weight="bold"),
 
-        tabla_familiares,
+        tabla_scroll,
 
-        ft.Row([nombres, apellidos, movilidad]),
-        ft.Row([documento, celular, etnia]),
-        ft.Row([genero, nivel_educacion, fecha_nacimiento, btn_fecha]),
-        ft.Row([edad, estado_civil, discapacidad]),
-        ft.Row([enfermedad, trabaja, ocupacion]),
-        ft.Row([ingreso, parentesco]),
+        ft.Row([nombres, apellidos, documento], wrap=True),
+        ft.Row([celular, etnia, genero], wrap=True),
+        ft.Row([nivel_educacion, fecha_nacimiento, btn_fecha], wrap=True),
+        ft.Row([edad, estado_civil, discapacidad], wrap=True),
+        ft.Row([enfermedad, trabaja, ocupacion], wrap=True),
+        ft.Row([ingreso, parentesco], wrap=True),
 
         ft.ElevatedButton("Añadir familiar", on_click=add_familiar)
     ])

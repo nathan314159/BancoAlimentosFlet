@@ -8,16 +8,50 @@ def main(page: ft.Page):
     page.title = "Formulario de Datos Generales"
     page.scroll = "auto"
     page.padding = 20
+    page.theme_mode = ft.ThemeMode.LIGHT
+
+
 
     # ---------------------------------------------------------
     # BASE
     # ---------------------------------------------------------
-    consentimiento_chk = ft.Checkbox(
-        label="Declaro que he sido informado(a) sobre el objetivo de esta encuesta y doy mi consentimiento para proporcionar mis datos personales.",
-        value=False,
-        width=380
-    )
+    # consentimiento_chk = ft.Checkbox(
+    #     label="Declaro que he sido informado(a) sobre el objetivo de esta encuesta y doy mi consentimiento para proporcionar mis datos personales.",
+    #     value=False,
+    #     width=380,
+    # )
+    
+    # consentimiento_chk = ft.Checkbox(
+    #     label=ft.Text(
+    #         "Declaro que he sido informado(a) sobre el objetivo de esta encuesta y doy mi consentimiento para proporcionar mis datos personales.",
+    #         size=18,          # ← change font size here
+    #         weight=ft.FontWeight.W_500
+    #     ),
+    #     value=False,
+    #     label_position=ft.LabelPosition.RIGHT,
+    # )
 
+    consentimiento_chk = ft.Row(
+        expand=True,
+        vertical_alignment=ft.CrossAxisAlignment.START,
+        controls=[
+            ft.Checkbox(
+                value=False,
+                on_change=None,  # we attach later
+            ),
+            ft.Column(
+                expand=True,
+                controls=[
+                    ft.Text(
+                        "Declaro que he sido informado(a) sobre el objetivo de esta encuesta y "
+                        "doy mi consentimiento para proporcionar mis datos personales.",
+                        size=18,
+                        max_lines=None,
+                    )
+                ]
+            )
+        ]
+    )
 
     # Dropdowns
     ddl_provincia = ft.Dropdown(
@@ -131,10 +165,13 @@ def main(page: ft.Page):
     # MOSTRAR/OCULTAR FORMULARIO
     # ---------------------------------------------------------
     def toggle_form(e):
-        formulario_completo.visible = consentimiento_chk.value
+        checkbox = consentimiento_chk.controls[0]   # ← THIS is the checkbox
+        formulario_completo.visible = checkbox.value
         page.update()
 
-    consentimiento_chk.on_change = toggle_form
+    # attach event to checkbox
+    consentimiento_chk.controls[0].on_change = toggle_form
+
 
     # ---------------------------------------------------------
     # AGREGA TODO
