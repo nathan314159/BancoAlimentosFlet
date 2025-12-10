@@ -1,6 +1,7 @@
 from data_base_models import get_etnia, get_genero, get_educacion, get_estado_civil
 from datetime import datetime
 import flet as ft
+import re
 
 # -------------------------
 # VALIDAR CÉDULA ECUATORIANA
@@ -29,6 +30,22 @@ def validar_cedula_ecuatoriana(cedula: str) -> bool:
 
     verificador = 10 - (suma % 10 if suma % 10 != 0 else 10)
     return verificador == int(cedula[9])
+
+def solo_letras(e):
+    control = e.control
+    if not control.value.replace(" ", "").isalpha():
+        control.error_text = "Solo letras"
+    else:
+        control.error_text = None
+    control.update()
+
+def solo_numeros(e):
+    control = e.control
+    if not control.value.isdigit():
+        control.error_text = "Solo números positivos"
+    else:
+        control.error_text = None
+    control.update()
 
 
 # ===========================
@@ -63,8 +80,8 @@ def familiares_view(page: ft.Page):
     )
 
     # -------- CAMPOS --------
-    nombres = ft.TextField(label="Nombres", width=260)
-    apellidos = ft.TextField(label="Apellidos", width=260)
+    nombres = ft.TextField(label="Nombres", width=260, on_change=solo_letras)
+    apellidos = ft.TextField(label="Apellidos", width=260, on_change=solo_letras)
     movilidad = ft.Dropdown(
         label="Movilidad", width=260,
         options=[
@@ -73,8 +90,7 @@ def familiares_view(page: ft.Page):
         ]
     )
     documento = ft.TextField(label="Documento", width=260, disabled=True)
-    celular = ft.TextField(label="Celular", width=260)
-
+    celular = ft.TextField(label="Celular", width=260, on_change=solo_numeros)
     etnia = ft.Dropdown(label="Etnia", width=260)
     genero = ft.Dropdown(label="Género", width=260)
     nivel_educacion = ft.Dropdown(label="Nivel Educación", width=260)
@@ -96,7 +112,7 @@ def familiares_view(page: ft.Page):
         on_click=lambda e: setattr(date_picker, "open", True) or page.update()
     )
 
-    edad = ft.TextField(label="Edad", width=260)
+    edad = ft.TextField(label="Edad", width=260, on_change=solo_numeros)
 
     # -------- DISCAPACIDAD --------
     def on_discapacidad_change(e):
@@ -109,7 +125,7 @@ def familiares_view(page: ft.Page):
         label="Discapacidad",
         width=260,
         options=[ft.dropdown.Option("Sí"), ft.dropdown.Option("No")],
-        on_change=on_discapacidad_change
+        on_change=on_discapacidad_change,
     )
 
     enfermedad = ft.TextField(
@@ -133,10 +149,9 @@ def familiares_view(page: ft.Page):
         on_change=on_trabaja_change
     )
 
-    ocupacion = ft.TextField(label="Ocupación", width=260, disabled=True)
-
-    ingreso = ft.TextField(label="Ingreso Mensual", width=260)
-    parentesco = ft.TextField(label="Parentesco", width=260)
+    ocupacion = ft.TextField(label="Ocupación", width=260, disabled=True, on_change=solo_letras)
+    ingreso = ft.TextField(label="Ingreso Mensual", width=260, on_change=solo_numeros)
+    parentesco = ft.TextField(label="Parentesco", width=260, on_change=solo_letras)
 
     # -------- CARGAR BD --------
     etnia.options = [ft.dropdown.Option(i) for i in get_etnia()]
@@ -179,7 +194,82 @@ def familiares_view(page: ft.Page):
         tabla_familiares.rows.remove(row)
         page.update()
 
+    def validar_campos_obligatorios(campos):
+        errores = False
+
+        for campo, mensaje in campos:
+            valor = campo.value
+
+            # ---- Caso 1: TextField (string) ----
+            if isinstance(valor, str):
+                if valor.strip() == "":
+                    campo.error_text = mensaje
+                    errores = True
+                else:
+                    campo.error_text = None
+
+            # ---- Caso 2: Dropdown (elige opción) ----
+            elif isinstance(campo, ft.Dropdown):
+                if campo.value is None or campo.value == "":
+                    campo.error_text = mensaje
+                    errores = True
+                else:
+                    campo.error_text = None
+
+            # ---- Caso 3: DatePicker (usa string en tu TextField fecha_nacimiento) ----
+            elif isinstance(campo, ft.TextField) and campo == fecha_nacimiento:
+                if campo.value is None or campo.value == "":
+                    campo.error_text = mensaje
+                    errores = True
+                else:
+                    campo.error_text = None
+
+            campo.update()
+
+        return errores
+
+
+
+
     def add_familiar(e):
+
+        campos_obligatorios = [
+            (nombres, "Ingrese un nombre"),
+            (apellidos, "Ingrese un apellido"),
+            (documento, "Ingrese un documento"),
+            (celular, "Ingrese un celular"),
+            (genero, "Seleccione un género"),
+            (nivel_educacion, "Seleccione nivel de educación"),
+            (fecha_nacimiento, "Ingrese fecha nacimiento"),
+            (edad, "Ingrese edad"),
+            (estado_civil, "Seleccione estado civil"),
+            (ingreso, "Ingrese ingreso mensual"),
+            (parentesco, "Ingrese parentesco"),
+        ]
+
+        # Validación general
+        if validar_campos_obligatorios(campos_obligatorios):
+            return
+
+        # Validar enfermedad si discapacidad = Sí
+        if discapacidad.value == "Sí" and enfermedad.value.strip() == "":
+            enfermedad.error_text = "Ingrese enfermedad"
+            enfermedad.update()
+            return
+        else:
+            enfermedad.error_text = None
+            enfermedad.update()
+
+        # Validar ocupación si trabaja = Sí
+        if trabaja.value == "Sí" and ocupacion.value.strip() == "":
+            ocupacion.error_text = "Ingrese ocupación"
+            ocupacion.update()
+            return
+        else:
+            ocupacion.error_text = None
+            ocupacion.update()
+
+
 
         row = ft.DataRow(
             cells=[
@@ -235,9 +325,9 @@ def familiares_view(page: ft.Page):
 
         tabla_scroll,
 
-        ft.Row([nombres, apellidos, documento], wrap=True),
-        ft.Row([celular, etnia, genero], wrap=True),
-        ft.Row([nivel_educacion, fecha_nacimiento, btn_fecha], wrap=True),
+        ft.Row([nombres, apellidos, movilidad], wrap=True),
+        ft.Row([documento, celular, etnia], wrap=True),
+        ft.Row([genero, nivel_educacion, fecha_nacimiento, btn_fecha], wrap=True),
         ft.Row([edad, estado_civil, discapacidad], wrap=True),
         ft.Row([enfermedad, trabaja, ocupacion], wrap=True),
         ft.Row([ingreso, parentesco], wrap=True),
