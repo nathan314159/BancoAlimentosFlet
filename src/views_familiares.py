@@ -1,7 +1,5 @@
 from data_base_models import get_etnia, get_genero, get_educacion, get_estado_civil
-from datetime import datetime
 import flet as ft
-import re
 
 # -------------------------
 # VALIDAR CÉDULA ECUATORIANA
@@ -228,9 +226,6 @@ def familiares_view(page: ft.Page):
 
         return errores
 
-
-
-
     def add_familiar(e):
 
         campos_obligatorios = [
@@ -300,6 +295,41 @@ def familiares_view(page: ft.Page):
         )
 
         tabla_familiares.rows.append(row)
+                # ---- LIMPIAR CAMPOS ----
+        nombres.value = ""
+        apellidos.value = ""
+        movilidad.value = None
+        documento.value = ""
+        celular.value = ""
+        etnia.value = None
+        genero.value = None
+        nivel_educacion.value = None
+        fecha_nacimiento.value = ""
+        edad.value = ""
+        estado_civil.value = None
+        discapacidad.value = None
+        enfermedad.value = ""
+        trabaja.value = None
+        ocupacion.value = ""
+        ingreso.value = ""
+        parentesco.value = ""
+
+        # Reset de campos dependientes
+        documento.disabled = True
+        enfermedad.disabled = True
+        ocupacion.disabled = True
+
+        # Remover errores visuales
+        for c in [
+            nombres, apellidos, documento, celular, etnia, genero,
+            nivel_educacion, fecha_nacimiento, edad, estado_civil,
+            discapacidad, enfermedad, trabaja, ocupacion, ingreso, parentesco
+        ]:
+            c.error_text = None
+            c.update()
+
+
+
         page.update()
 
     # -------- WRAPPER CON SCROLL --------

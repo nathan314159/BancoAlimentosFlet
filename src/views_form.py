@@ -1,7 +1,7 @@
 # Formulario de voluntario
 from views_familiares import familiares_view
 from data_base_models import get_provincias, get_cantones_by_provincia, get_parroquias_by_canton_and_tipo
-
+from view_datos_vivienda_form import datos_vivienda_form
 import flet as ft
 
 def main(page: ft.Page):
@@ -158,6 +158,7 @@ def main(page: ft.Page):
             ft.Divider(),
             familiares_view(page),
             ft.Divider(),
+            datos_vivienda_form(page),
         ]
     )
 
