@@ -8,7 +8,6 @@ CAT_ETNIAS = 34
 CAT_GENERO = 35
 CAT_NIVEL_EDUCACION = 36
 CAT_ESTADO_CIVIL = 37
-
 CAT_VIVIENDA = 22
 CAT_TECHO = 23
 CAT_PARED = 24
@@ -86,245 +85,30 @@ def get_parroquias_by_canton_and_tipo(canton_nombre, tipo):
 
     return [r[0] for r in rows]
 
-def get_etnia():
-    conn = get_connection() # gets the coneccion from database
-    cursor = conn.cursor() # this has all of the methods 
-    cursor.execute(
-        "SELECT itc_nombre FROM tbl_item_catalogo WHERE id_catalogo = ?" , # executes this query that says return 
-        # “I will put a parameter here later.” ?
-        (CAT_ETNIAS,)  # This is a tuple containing the actual value for the question mark. CAT_ETNIAS=34
-    )
-    rows = cursor.fetchall() #  Gets all the resulting rows from the query as a list of tuples
-    conn.close() # Closes the database connection
-    
-    lista = []
-    for r in rows: # Iterates the rows; each row is a tuple like ("Carchi",)
-        lista.append(r[0]) # gets the only column and converts it to a string not a tuple anymore 
-    return lista # and appends it to the list
-
-def get_genero():
+def get_items_by_catalogo(id_catalogo):
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute(
-        "SELECT itc_nombre FROM tbl_item_catalogo WHERE id_catalogo = ?" ,
-        (CAT_GENERO,)
+        "SELECT itc_nombre FROM tbl_item_catalogo WHERE id_catalogo = ?",
+        (id_catalogo,)
     )
     rows = cursor.fetchall()
     conn.close()
-    
-    lista = []
-    for r in rows:
-        lista.append(r[0])
-    return lista 
+    return [r[0] for r in rows]
 
-def get_educacion():
-    conn = get_connection()
-    cursor = conn.cursor()
-    cursor.execute(
-        "SELECT itc_nombre FROM tbl_item_catalogo WHERE id_catalogo = ?" ,
-        (CAT_NIVEL_EDUCACION,)
-    )
-    rows = cursor.fetchall()
-    conn.close()
-    
-    lista = []
-    for r in rows:
-        lista.append(r[0])
-    return lista
-
-def get_estado_civil():
-    conn = get_connection()
-    cursor = conn.cursor()
-    cursor.execute(
-        "SELECT itc_nombre FROM tbl_item_catalogo WHERE id_catalogo = ?" ,
-        (CAT_ESTADO_CIVIL,)
-    )
-    rows = cursor.fetchall()
-    conn.close()
-    
-    lista = []
-    for r in rows:
-        lista.append(r[0])
-    return lista
-
-def get_tipo_viviendas():
-    conn = get_connection()
-    cursor = conn.cursor()
-    cursor.execute(
-        "SELECT itc_nombre FROM tbl_item_catalogo WHERE id_catalogo = ?" ,
-        (CAT_VIVIENDA,)
-    )
-    rows = cursor.fetchall()
-    conn.close()
-    
-    lista = []
-    for r in rows:
-        lista.append(r[0])
-    return lista
-
-def get_tipo_techos():
-    conn = get_connection()
-    cursor = conn.cursor()
-    cursor.execute(
-        "SELECT itc_nombre FROM tbl_item_catalogo WHERE id_catalogo = ?" ,
-        (CAT_TECHO,)
-    )
-    rows = cursor.fetchall()
-    conn.close()
-    
-    lista = []
-    for r in rows:
-        lista.append(r[0])
-    return lista
-
-def get_tipo_paredes():
-    conn = get_connection()
-    cursor = conn.cursor()
-    cursor.execute(
-        "SELECT itc_nombre FROM tbl_item_catalogo WHERE id_catalogo = ?" ,
-        (CAT_PARED,)
-    )
-    rows = cursor.fetchall()
-    conn.close()
-    
-    lista = []
-    for r in rows:
-        lista.append(r[0])
-    return lista
-
-def get_tipo_pisos():
-    conn = get_connection()
-    cursor = conn.cursor()
-    cursor.execute(
-        "SELECT itc_nombre FROM tbl_item_catalogo WHERE id_catalogo = ?" ,
-        (CAT_PISO,)
-    )
-    rows = cursor.fetchall()
-    conn.close()
-    
-    lista = []
-    for r in rows:
-        lista.append(r[0])
-    return lista
-
-def get_servicios_higienicos():
-    conn = get_connection()
-    cursor = conn.cursor()
-    cursor.execute(
-        "SELECT itc_nombre FROM tbl_item_catalogo WHERE id_catalogo = ?" ,
-        (CAT_SERV_HIG,)
-    )
-    rows = cursor.fetchall()
-    conn.close()
-    
-    lista = []
-    for r in rows:
-        lista.append(r[0])
-    return lista
-
-def get_combustibles_cocina():
-    conn = get_connection()
-    cursor = conn.cursor()
-    cursor.execute(
-        "SELECT itc_nombre FROM tbl_item_catalogo WHERE id_catalogo = ?" ,
-        (CAT_COMB_COCINA,)
-    )
-    rows = cursor.fetchall()
-    conn.close()
-    
-    lista = []
-    for r in rows:
-        lista.append(r[0])
-    return lista
-
-def get_viviendas():
-    conn = get_connection()
-    cursor = conn.cursor()
-    cursor.execute(
-        "SELECT itc_nombre FROM tbl_item_catalogo WHERE id_catalogo = ?" ,
-        (CAT_ALOJAMIENTO,)
-    )
-    rows = cursor.fetchall()
-    conn.close()
-    
-    lista = []
-    for r in rows:
-        lista.append(r[0])
-    return lista
-
-def get_viviendas():
-    conn = get_connection()
-    cursor = conn.cursor()
-    cursor.execute(
-        "SELECT itc_nombre FROM tbl_item_catalogo WHERE id_catalogo = ?" ,
-        (CAT_SERV_AGUA,)
-    )
-    rows = cursor.fetchall()
-    conn.close()
-    
-    lista = []
-    for r in rows:
-        lista.append(r[0])
-    return lista
-
-def get_liminacion_basura():
-    conn = get_connection()
-    cursor = conn.cursor()
-    cursor.execute(
-        "SELECT itc_nombre FROM tbl_item_catalogo WHERE id_catalogo = ?" ,
-        (CAT_ELM_BAS,)
-    )
-    rows = cursor.fetchall()
-    conn.close()
-    
-    lista = []
-    for r in rows:
-        lista.append(r[0])
-    return lista
-
-def get_lugares_viveres():
-    conn = get_connection()
-    cursor = conn.cursor()
-    cursor.execute(
-        "SELECT itc_nombre FROM tbl_item_catalogo WHERE id_catalogo = ?" ,
-        (CAT_LUG_FREC_COMPRA,)
-    )
-    rows = cursor.fetchall()
-    conn.close()
-    
-    lista = []
-    for r in rows:
-        lista.append(r[0])
-    return lista
-
-def get_estado_transporte():
-    conn = get_connection()
-    cursor = conn.cursor()
-    cursor.execute(
-        "SELECT itc_nombre FROM tbl_item_catalogo WHERE id_catalogo = ?" ,
-        (CAT_EST_TRANSPORTE,)
-    )
-    rows = cursor.fetchall()
-    conn.close()
-    
-    lista = []
-    for r in rows:
-        lista.append(r[0])
-    return lista
-
-def get_medio_transporte():
-    conn = get_connection()
-    cursor = conn.cursor()
-    cursor.execute(
-        "SELECT itc_nombre FROM tbl_item_catalogo WHERE id_catalogo = ?" ,
-        (CAT_TIP_VEHICULOS,)
-    )
-    rows = cursor.fetchall()
-    conn.close()
-    
-    lista = []
-    for r in rows:
-        lista.append(r[0])
-    return lista
-
-
+get_etnia = lambda: get_items_by_catalogo(CAT_ETNIAS)
+get_genero = lambda: get_items_by_catalogo(CAT_GENERO)
+get_educacion = lambda: get_items_by_catalogo(CAT_NIVEL_EDUCACION)
+get_estado_civil = lambda: get_items_by_catalogo(CAT_ESTADO_CIVIL)
+get_tipo_viviendas = lambda: get_items_by_catalogo(CAT_VIVIENDA)
+get_tipo_techos = lambda: get_items_by_catalogo(CAT_TECHO)
+get_tipo_paredes = lambda: get_items_by_catalogo(CAT_PARED)
+get_tipo_pisos = lambda: get_items_by_catalogo(CAT_PISO)
+get_combustibles_cocina = lambda: get_items_by_catalogo(CAT_COMB_COCINA)
+get_servicios_higienicos = lambda: get_items_by_catalogo(CAT_SERV_HIG)
+get_liminacion_basura = lambda: get_items_by_catalogo(CAT_ELM_BAS)
+get_lugares_viveres = lambda: get_items_by_catalogo(CAT_LUG_FREC_COMPRA)
+get_medio_transporte = lambda: get_items_by_catalogo(CAT_TIP_VEHICULOS)
+get_estado_transporte = lambda: get_items_by_catalogo(CAT_EST_TRANSPORTE)
+get_servicio_agua = lambda: get_items_by_catalogo(CAT_SERV_AGUA)
+get_tipo_alojamiento = lambda: get_tipo_alojamiento(CAT_ALOJAMIENTO)

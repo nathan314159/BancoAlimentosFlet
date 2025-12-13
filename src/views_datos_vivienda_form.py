@@ -29,14 +29,14 @@ def datos_vivienda_form(page: ft.Page):
     datos_servicios_higienicos = ft.Dropdown(label="Servicios higiénicos", width=260)
     load_dropdown_options(datos_servicios_higienicos, get_servicios_higienicos())
 
-    datos_viviendas = ft.Dropdown(label="Vivienda",  width=260)
-    load_dropdown_options(datos_viviendas, get_viviendas())
+    datos_viviendas = ft.Dropdown(label="Vivienda", width=260)
+    load_dropdown_options(datos_viviendas, get_tipo_alojamiento())
     
     datos_pago_vivienda = ft.TextField(label="Pago vivienda", value="0")
     datos_pago_vivienda = money_input("Pago vivienda")
 
     datos_agua = ft.Dropdown(label="Servicio de agua", width=260)
-    load_dropdown_options(datos_agua, get_viviendas())
+    load_dropdown_options(datos_agua, get_servicio_agua())
     
     datos_pago_agua = ft.TextField(label="Pago de agua", value="0")
     datos_pago_agua = money_input("Pago agua")
