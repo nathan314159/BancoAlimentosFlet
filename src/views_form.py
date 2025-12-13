@@ -181,9 +181,6 @@ def main(page: ft.Page):
         ft.Container(
             content=ft.Column(
                 controls=[
-                    ft.Text("Formulario para datos generales y parentescos",
-                            size=20, weight=ft.FontWeight.BOLD, text_align="center"),
-                    ft.Divider(),
                     consentimiento_chk,
                     ft.Divider(),
                     formulario_completo

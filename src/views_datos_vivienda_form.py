@@ -3,6 +3,8 @@ from data_base_models import *
 from helper import *
 
 def datos_vivienda_form(page: ft.Page):
+    txt_Datos_vivienda = ft.Text("Datos vivienda", size=18, weight=ft.FontWeight.BOLD)
+    
     # === TUS CONTROLES ===
     datos_comunidades = ft.TextField(label="Comunidad",  width=260, on_change=solo_letras)
     datos_barrios = ft.TextField(label="Barrio",  width=260, on_change=solo_letras)
@@ -107,13 +109,17 @@ def datos_vivienda_form(page: ft.Page):
     load_dropdown_options(datos_lugares_viveres, get_lugares_viveres())
 
     # Vehículos
-    datos_medio_transporte = ft.Dropdown(label="Tipo de vehículo", options=[])
+    datos_medio_transporte = ft.Dropdown(label="Tipo de vehículo", width=260)
     load_dropdown_options(datos_medio_transporte, get_medio_transporte())
     
-    datos_estado_transporte = ft.Dropdown(label="Estado del vehículo", options=[])
+    datos_estado_transporte = ft.Dropdown(label="Estado del vehículo", width=260)
     load_dropdown_options(datos_estado_transporte, get_estado_transporte())
     
     datos_gastos_viveres = money_input("Gasto en alimentación")
+
+    def eliminar_fila(row):
+        tablaVehiculos.rows.remove(row)
+        page.update()
 
     tablaVehiculos = ft.DataTable(
         columns=[
@@ -126,18 +132,32 @@ def datos_vivienda_form(page: ft.Page):
 
     def agregar_vehiculo(e):
         if datos_medio_transporte.value and datos_estado_transporte.value:
-            tablaVehiculos.rows.append(
-                ft.DataRow(
-                    cells=[
-                        ft.DataCell(ft.Text(datos_medio_transporte.value)),
-                        ft.DataCell(ft.Text(datos_estado_transporte.value)),
-                        ft.DataCell(ft.Text("Eliminar")),
-                    ]
-                )
+
+            # 1️⃣ Crear la fila SIN el botón
+            row = ft.DataRow(cells=[
+                ft.DataCell(ft.Text(datos_medio_transporte.value)),
+                ft.DataCell(ft.Text(datos_estado_transporte.value)),
+                ft.DataCell(ft.Text("")),  # placeholder
+            ])
+
+            # 2️⃣ Crear botón DELETE con referencia segura a la fila
+            btn_delete = ft.IconButton(
+                icon=ft.Icons.DELETE,
+                icon_color="red",
+                on_click=lambda e: eliminar_fila(row)
             )
+
+            # 3️⃣ Reemplazar la última celda
+            row.cells[2] = ft.DataCell(btn_delete)
+
+            # 4️⃣ Agregar fila a la tabla
+            tablaVehiculos.rows.append(row)
             page.update()
 
-    btn_agregar_vehiculo = ft.ElevatedButton("Agregar", on_click=agregar_vehiculo)
+    btn_agregar_vehiculo = ft.ElevatedButton(
+        "Agregar",
+        on_click=agregar_vehiculo
+    )
 
     # Celulares y terrenos
     def toggle_celular(e):
@@ -145,19 +165,26 @@ def datos_vivienda_form(page: ft.Page):
         datos_cantidad_celulare.value = "0" if datos_cantidad_celulare.read_only else ""
         page.update()
 
-    datos_terrenos = ft.Dropdown(label="¿Posee terrenos?", options=[ft.dropdown.Option("Sí"), ft.dropdown.Option("No")])
-    datos_celular = ft.Dropdown(label="¿Posee celular?", options=[ft.dropdown.Option("Sí"), ft.dropdown.Option("No")], on_change=toggle_celular)
-    datos_cantidad_celulare = ft.TextField(label="Cantidad de celulares", value="0", read_only=True)
+    datos_terrenos = ft.Dropdown(label="¿Posee terrenos?", options=[ft.dropdown.Option("Sí"), ft.dropdown.Option("No")], width=260)
+    datos_celular = ft.Dropdown(label="¿Posee celular?", options=[ft.dropdown.Option("Sí"), ft.dropdown.Option("No")], on_change=toggle_celular, width=260)
+    datos_cantidad_celulare = ft.TextField(label="Cantidad de celulares", value="0", read_only=True, width=260)
 
-    datos_plan_celular = ft.Dropdown(label="¿Tiene plan de celular?", options=[ft.dropdown.Option("Sí"), ft.dropdown.Option("No")])
+    datos_plan_celular = ft.Dropdown(label="¿Tiene plan de celular?", options=[ft.dropdown.Option("Sí"), ft.dropdown.Option("No")], width=260)
 
-    datos_observacion = ft.TextField(label="Observaciones", multiline=True)
+    datos_observacion = ft.TextField(
+    label="Observaciones",
+    multiline=True,
+    min_lines=5,      # visible height (recommended)
+    max_lines=10,     # can grow while typing
+    expand=True       # take available width
+    )
+
 
     datos_resultado_sistema = ft.TextField(label="Resultado automático", value="Pendiente", read_only=True)
     datos_resultado = ft.Dropdown(label="Resultado", options=[
         ft.dropdown.Option("Aprobado"),
         ft.dropdown.Option("No aprobado")
-    ])
+    ], width=260)
     criterioMensaje = ft.Text("Criterio", size=18, weight=ft.FontWeight.BOLD)
 
     def enviar(e):
@@ -169,6 +196,7 @@ def datos_vivienda_form(page: ft.Page):
 
     # === AQUÍ LA MAGIA: RETORNAR UN CONTROL ===
     return ft.Column([
+        ft.Row([txt_Datos_vivienda], wrap=True),    
         ft.Row([datos_comunidades, datos_barrios], wrap=True),
         ft.Row([datos_tipo_viviendas, datos_techos, datos_paredes, datos_pisos], wrap=True),
         ft.Row([datos_cuarto, datos_combustibles_cocina, datos_servicios_higienicos], wrap=True),
