@@ -1,54 +1,7 @@
 from data_base_models import get_etnia, get_genero, get_educacion, get_estado_civil
+from helper import *
 import flet as ft
 
-# -------------------------
-# VALIDAR CÉDULA ECUATORIANA
-# -------------------------
-def validar_cedula_ecuatoriana(cedula: str) -> bool:
-    cedula = cedula.strip()
-    if not cedula.isdigit() or len(cedula) != 10:
-        return False
-
-    provincia = int(cedula[:2])
-    tercer_digito = int(cedula[2])
-
-    if provincia < 1 or (provincia > 24 and provincia != 30):
-        return False
-    if tercer_digito >= 6:
-        return False
-
-    coef = [2, 1, 2, 1, 2, 1, 2, 1, 2]
-    suma = 0
-
-    for i in range(9):
-        val = int(cedula[i]) * coef[i]
-        if val >= 10:
-            val -= 9
-        suma += val
-
-    verificador = 10 - (suma % 10 if suma % 10 != 0 else 10)
-    return verificador == int(cedula[9])
-
-def solo_letras(e):
-    control = e.control
-    if not control.value.replace(" ", "").isalpha():
-        control.error_text = "Solo letras"
-    else:
-        control.error_text = None
-    control.update()
-
-def solo_numeros(e):
-    control = e.control
-    if not control.value.isdigit():
-        control.error_text = "Solo números positivos"
-    else:
-        control.error_text = None
-    control.update()
-
-
-# ===========================
-#     FAMILIARES VIEW
-# ===========================
 def familiares_view(page: ft.Page):
 
     page.overlay.clear()
@@ -88,7 +41,7 @@ def familiares_view(page: ft.Page):
         ]
     )
     documento = ft.TextField(label="Documento", width=260, disabled=True)
-    celular = ft.TextField(label="Celular", width=260, on_change=solo_numeros)
+    celular = ft.TextField(label="Celular", width=260, input_filter=ft.NumbersOnlyInputFilter())
     etnia = ft.Dropdown(label="Etnia", width=260)
     genero = ft.Dropdown(label="Género", width=260)
     nivel_educacion = ft.Dropdown(label="Nivel Educación", width=260)
@@ -110,7 +63,7 @@ def familiares_view(page: ft.Page):
         on_click=lambda e: setattr(date_picker, "open", True) or page.update()
     )
 
-    edad = ft.TextField(label="Edad", width=260, on_change=solo_numeros)
+    edad = ft.TextField(label="Edad", width=260, input_filter=ft.NumbersOnlyInputFilter())
 
     # -------- DISCAPACIDAD --------
     def on_discapacidad_change(e):
@@ -148,7 +101,8 @@ def familiares_view(page: ft.Page):
     )
 
     ocupacion = ft.TextField(label="Ocupación", width=260, disabled=True, on_change=solo_letras)
-    ingreso = ft.TextField(label="Ingreso Mensual", width=260, on_change=solo_numeros)
+    ingreso = ft.TextField(label="Ingreso Mensual", width=260)
+    ingreso = money_input("Ingreso Mensual")
     parentesco = ft.TextField(label="Parentesco", width=260, on_change=solo_letras)
 
     # -------- CARGAR BD --------
