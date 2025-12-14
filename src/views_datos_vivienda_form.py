@@ -1,6 +1,7 @@
 import flet as ft
 from data_base_models import *
 from helper import *
+from data_base_insert import insert_datos_generales
 
 def datos_vivienda_form(page: ft.Page):
     txt_Datos_vivienda = ft.Text("Datos vivienda", size=18, weight=ft.FontWeight.BOLD)
@@ -188,11 +189,49 @@ def datos_vivienda_form(page: ft.Page):
     criterioMensaje = ft.Text("Criterio", size=18, weight=ft.FontWeight.BOLD)
 
     def enviar(e):
-        page.snack_bar = ft.SnackBar(ft.Text("Datos enviados"))
+        data = {
+            "datos_comunidades": datos_comunidades.value,
+            "datos_barrios": datos_barrios.value,
+            "datos_tipo_viviendas": datos_tipo_viviendas.value,
+            "datos_techos": datos_techos.value,
+            "datos_paredes": datos_paredes.value,
+            "datos_pisos": datos_pisos.value,
+            "datos_cuarto": datos_cuarto.value,
+            "datos_combustibles_cocina": datos_combustibles_cocina.value,
+            "datos_servicios_higienicos": datos_servicios_higienicos.value,
+            "datos_viviendas": datos_viviendas.value,
+            "datos_pago_vivienda": datos_pago_vivienda.value,
+            "datos_agua": datos_agua.value,
+            "datos_pago_agua": datos_pago_agua.value,
+            "datos_pago_luz": datos_pago_luz.value,
+            "datos_cantidad_luz": datos_cantidad_luz.value,
+            "datos_internet": datos_internet.value,
+            "datos_pago_internet": datos_pago_internet.value,
+            "datos_tv_cable": datos_tv_cable.value,
+            "datos_tv_pago": datos_tv_pago.value,
+            "datos_eliminacion_basura": datos_eliminacion_basura.value,
+            "datos_lugares_viveres": datos_lugares_viveres.value,
+            "datos_gastos_viveres": datos_gastos_viveres.value,
+            "datos_terrenos": datos_terrenos.value,
+            "datos_celular": datos_celular.value,
+            "datos_cantidad_celulare": datos_cantidad_celulare.value,
+            "datos_plan_celular": datos_plan_celular.value,
+            "datos_observacion": datos_observacion.value,
+            "datos_resultado": datos_resultado.value,
+            "datos_resultado_sistema": datos_resultado_sistema.value,
+        }
+
+        # 🔥 AQUÍ ESTÁ EL CAMBIO IMPORTANTE
+        id_general = insert_datos_generales(data, tablaVehiculos)
+
+        page.snack_bar = ft.SnackBar(
+            ft.Text("Datos guardados correctamente")
+        )
         page.snack_bar.open = True
         page.update()
 
     btn_enviar = ft.ElevatedButton("Enviar", on_click=enviar)
+
 
     # === AQUÍ LA MAGIA: RETORNAR UN CONTROL ===
     return ft.Column([
