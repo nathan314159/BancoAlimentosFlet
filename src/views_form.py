@@ -10,27 +10,12 @@ def main(page: ft.Page):
     page.padding = 20
     page.theme_mode = ft.ThemeMode.LIGHT
 
-
-
-    # ---------------------------------------------------------
-    # BASE
-    # ---------------------------------------------------------
-    # consentimiento_chk = ft.Checkbox(
-    #     label="Declaro que he sido informado(a) sobre el objetivo de esta encuesta y doy mi consentimiento para proporcionar mis datos personales.",
-    #     value=False,
-    #     width=380,
-    # )
-    
-    # consentimiento_chk = ft.Checkbox(
-    #     label=ft.Text(
-    #         "Declaro que he sido informado(a) sobre el objetivo de esta encuesta y doy mi consentimiento para proporcionar mis datos personales.",
-    #         size=18,          # ← change font size here
-    #         weight=ft.FontWeight.W_500
-    #     ),
-    #     value=False,
-    #     label_position=ft.LabelPosition.RIGHT,
-    # )
-
+    datos_cedula_voluntario = ft.TextField(
+    label="Cédula del voluntario",
+    keyboard_type=ft.KeyboardType.NUMBER,
+    max_length=10,
+    width=260   
+    )
     consentimiento_chk = ft.Row(
         expand=True,
         vertical_alignment=ft.CrossAxisAlignment.START,
@@ -142,10 +127,6 @@ def main(page: ft.Page):
     formulario_completo = ft.Column(
         visible=False,
         controls=[
-            ft.Text("Formulario para datos generales y parentescos",
-                    size=18, weight=ft.FontWeight.BOLD),
-            ft.Divider(),
-
             ft.Row(
                 controls=[
                     ddl_provincia,

@@ -6,7 +6,49 @@ from data_base_insert import insert_datos_generales
 def datos_vivienda_form(page: ft.Page):
     txt_Datos_vivienda = ft.Text("Datos vivienda", size=18, weight=ft.FontWeight.BOLD)
     
-    # === TUS CONTROLES ===
+    # -------- VALIDAR DOCUMENTO --------
+    def validar_documento(e):
+        doc = datos_cedula_voluntario.value.strip()
+
+        if movilidad.value == "Ecuatoriano":
+            datos_cedula_voluntario.error_text = None if validar_cedula_ecuatoriana(doc) else "Cédula inválida"
+        else:
+            datos_cedula_voluntario.error_text = None if len(doc) >= 4 else "Documento extranjero demasiado corto"
+
+        datos_cedula_voluntario.update()
+    
+    datos_cedula_voluntario = ft.TextField(
+    label="Cédula del voluntario",
+    keyboard_type=ft.KeyboardType.NUMBER,
+    max_length=10,
+    width=260,
+    disabled=True
+    )
+    
+    movilidad = ft.Dropdown(
+        label="Movilidad", width=260,
+        options=[
+            ft.dropdown.Option("Ecuatoriano"),
+            ft.dropdown.Option("Extranjero")
+        ]
+    )
+    
+    def toggle_tipo_documento(e):
+        datos_cedula_voluntario.disabled = False
+        datos_cedula_voluntario.value = ""
+
+        if movilidad.value == "Ecuatoriano":
+            datos_cedula_voluntario.placeholder = "Cédula"
+            datos_cedula_voluntario.max_length = 10
+        else:
+            datos_cedula_voluntario.placeholder = "Pasaporte"
+            datos_cedula_voluntario.max_length = 20
+
+        datos_cedula_voluntario.update()
+    datos_cedula_voluntario.on_blur = validar_documento
+
+    movilidad.on_change = toggle_tipo_documento
+    
     datos_comunidades = ft.TextField(label="Comunidad",  width=260, on_change=solo_letras)
     datos_barrios = ft.TextField(label="Barrio",  width=260, on_change=solo_letras)
 
@@ -189,7 +231,21 @@ def datos_vivienda_form(page: ft.Page):
     criterioMensaje = ft.Text("Criterio", size=18, weight=ft.FontWeight.BOLD)
 
     def enviar(e):
+        # 1️⃣ VALIDACIÓN PRIMERO
+        if not datos_cedula_voluntario.value:
+            page.snack_bar = ft.SnackBar(
+                ft.Text("Debe ingresar la cédula o pasaporte")
+            )
+            page.snack_bar.open = True
+            page.update()
+            return
+
+        # 2️⃣ DESHABILITAR BOTÓN (evita doble click)
+        btn_enviar.disabled = True
+        page.update()
+
         data = {
+            "datos_cedula_voluntario": datos_cedula_voluntario.value,
             "datos_comunidades": datos_comunidades.value,
             "datos_barrios": datos_barrios.value,
             "datos_tipo_viviendas": datos_tipo_viviendas.value,
@@ -221,14 +277,25 @@ def datos_vivienda_form(page: ft.Page):
             "datos_resultado_sistema": datos_resultado_sistema.value,
         }
 
-        # 🔥 AQUÍ ESTÁ EL CAMBIO IMPORTANTE
-        id_general = insert_datos_generales(data, tablaVehiculos)
+        try:
+            insert_datos_generales(data, tablaVehiculos)
 
-        page.snack_bar = ft.SnackBar(
-            ft.Text("Datos guardados correctamente")
-        )
-        page.snack_bar.open = True
-        page.update()
+            page.snack_bar = ft.SnackBar(
+                ft.Text("Datos guardados correctamente")
+            )
+            page.snack_bar.open = True
+
+        except Exception as ex:
+            page.snack_bar = ft.SnackBar(
+                ft.Text(f"Error al guardar: {ex}")
+            )
+            page.snack_bar.open = True
+
+        finally:
+            # 3️⃣ REHABILITAR BOTÓN
+            btn_enviar.disabled = False
+            page.update()
+
 
     btn_enviar = ft.ElevatedButton("Enviar", on_click=enviar)
 
@@ -263,5 +330,8 @@ def datos_vivienda_form(page: ft.Page):
         datos_plan_celular,
         datos_observacion,
         ft.Row([datos_resultado_sistema, datos_resultado, criterioMensaje], wrap=True),
+        ft.Row([movilidad,datos_cedula_voluntario], wrap=True),  
         btn_enviar
+        
+        
     ], spacing=20)

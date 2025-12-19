@@ -42,7 +42,6 @@ def money_input(label="Monto", value="", disabled=False, width=260 ):
 
     return field
 
-
 def load_dropdown_options(control, items):
     control.options = [ft.dropdown.Option(i) for i in items]
 

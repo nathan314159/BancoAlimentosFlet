@@ -16,9 +16,13 @@ def insert_datos_generales(data: dict, tablaVehiculos):
 
     # Convertir DataTable a TEXT
     medios, estados = obtener_transportes(tablaVehiculos)
+    print("CEDULA:", data["datos_cedula_voluntario"])
+    print("MEDIOS:", medios)
+    print("ESTADOS:", estados)
 
     cursor.execute("""
         INSERT INTO tbl_datos_generales (
+            datos_cedula_voluntario,
             datos_comunidades,
             datos_barrios,
             datos_tipo_viviendas,
@@ -50,8 +54,9 @@ def insert_datos_generales(data: dict, tablaVehiculos):
             datos_observacion,
             datos_resultado,
             datos_resultado_sistema
-        ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+        ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
     """, (
+        data["datos_cedula_voluntario"],
         data["datos_comunidades"],
         data["datos_barrios"],
         data["datos_tipo_viviendas"],
@@ -86,6 +91,10 @@ def insert_datos_generales(data: dict, tablaVehiculos):
     ))
 
     conn.commit()
+    print("ROWCOUNT:", cursor.rowcount)
+    cursor.execute("SELECT COUNT(*) FROM tbl_datos_generales")
+    print("TOTAL REGISTROS:", cursor.fetchone()[0])
+
     last_id = cursor.lastrowid
     conn.close()
     return last_id
