@@ -50,18 +50,36 @@ def familiares_view(page: ft.Page):
     # -------- FECHA NACIMIENTO --------
     fecha_nacimiento = ft.TextField(label="Fecha Nacimiento", width=260, read_only=True)
 
-    date_picker = ft.DatePicker(
-        on_change=lambda e: (
-            setattr(fecha_nacimiento, "value", e.control.value),
+    # date_picker = ft.DatePicker(
+    #     on_change=lambda e: (
+    #         setattr(fecha_nacimiento, "value", e.control.value),
+    #         fecha_nacimiento.update()
+    #     )
+    # )
+    # page.overlay.append(date_picker)
+    
+    def on_date_selected(e):
+        if e.control.value:
+            fecha_nacimiento.value = e.control.value.strftime("%d/%m/%Y")
             fecha_nacimiento.update()
-        )
+
+    
+    date_picker = ft.DatePicker(
+        on_change=lambda e: on_date_selected(e)
     )
+
     page.overlay.append(date_picker)
+
+    def open_calendar():
+        date_picker.open = True
+        page.update()
 
     btn_fecha = ft.IconButton(
         icon=ft.Icons.CALENDAR_MONTH,
-        on_click=lambda e: setattr(date_picker, "open", True) or page.update()
+        tooltip="Seleccionar fecha",
+        on_click=lambda e: open_calendar()
     )
+
 
     edad = ft.TextField(label="Edad", width=260, input_filter=ft.NumbersOnlyInputFilter())
 
