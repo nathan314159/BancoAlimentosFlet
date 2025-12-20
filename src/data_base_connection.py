@@ -11,5 +11,12 @@ print(">>> USANDO DB_PATH =", DB_PATH)
 print(">>> EXISTE? =", os.path.exists(DB_PATH))
 print(">>> DIR EXISTE? =", os.path.isdir(os.path.dirname(DB_PATH)))
 
+# def get_connection():
+#     return sqlite3.connect(DB_PATH)
+
 def get_connection():
-    return sqlite3.connect(DB_PATH)
+    return sqlite3.connect(
+        DB_PATH,
+        timeout=10,
+        check_same_thread=False
+    )

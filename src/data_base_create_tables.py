@@ -223,106 +223,6 @@ VALUES (?, ?, ?, ?, ?, ?)
 ])
 
 
-cursor.execute("""
-
-CREATE TABLE IF NOT EXISTS tbl_datos_generales (
-    id_datos_generales INTEGER PRIMARY KEY AUTOINCREMENT,
-    id_users INTEGER NOT NULL,
-    datos_parentesco_id INTEGER,
-    datos_provincia INTEGER,
-    datos_canton TEXT,
-    datos_tipo_parroquias TEXT,
-    datos_parroquias INTEGER,
-    datos_comunidades TEXT,
-    datos_barrios TEXT,
-    datos_tipo_viviendas INTEGER,
-    datos_techos INTEGER,
-    datos_paredes INTEGER,
-    datos_pisos INTEGER,
-    datos_cuarto INTEGER,
-    datos_combustibles_cocina INTEGER,
-    datos_servicios_higienicos INTEGER,
-    datos_viviendas INTEGER,
-    datos_pago_vivienda INTEGER,
-    datos_agua INTEGER,
-    datos_pago_agua INTEGER,
-    datos_pago_luz INTEGER,
-    datos_cantidad_luz INTEGER,
-    datos_internet INTEGER,
-    datos_pago_internet INTEGER,
-    datos_tv_cable INTEGER,
-    datos_tv_pago INTEGER,
-    datos_eliminacion_basura INTEGER,
-    datos_lugares_mayor_frecuencia_viveres INTEGER,
-    datos_gastos_viveres_alimentacion INTEGER,
-    datos_medio_transporte TEXT,
-    datos_estado_transporte TEXT,
-    datos_terrenos INTEGER,
-    datos_celular INTEGER,
-    datos_cantidad_celulare INTEGER,
-    datos_plan_celular INTEGER,
-    datos_observacion TEXT,
-    datos_resultado TEXT,
-    datos_resultado_sistema TEXT,
-    datos_estado INTEGER DEFAULT 1,
-    datos_consentimiento INTEGER DEFAULT 1,
-    datos_created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    datos_updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (id_users) REFERENCES tbl_users(id_users)
-);
-
-""")
-
-cursor.execute("""
-
-CREATE TABLE IF NOT EXISTS tbl_datos_generales (
-    id_datos_generales INTEGER PRIMARY KEY AUTOINCREMENT,
-    id_users INTEGER NOT NULL,
-    datos_parentesco_id INTEGER,
-    datos_provincia INTEGER,
-    datos_canton TEXT,
-    datos_tipo_parroquias TEXT,
-    datos_parroquias INTEGER,
-    datos_comunidades TEXT,
-    datos_barrios TEXT,
-    datos_tipo_viviendas INTEGER,
-    datos_techos INTEGER,
-    datos_paredes INTEGER,
-    datos_pisos INTEGER,
-    datos_cuarto INTEGER,
-    datos_combustibles_cocina INTEGER,
-    datos_servicios_higienicos INTEGER,
-    datos_viviendas INTEGER,
-    datos_pago_vivienda INTEGER,
-    datos_agua INTEGER,
-    datos_pago_agua INTEGER,
-    datos_pago_luz INTEGER,
-    datos_cantidad_luz INTEGER,
-    datos_internet INTEGER,
-    datos_pago_internet INTEGER,
-    datos_tv_cable INTEGER,
-    datos_tv_pago INTEGER,
-    datos_eliminacion_basura INTEGER,
-    datos_lugares_mayor_frecuencia_viveres INTEGER,
-    datos_gastos_viveres_alimentacion INTEGER,
-    datos_medio_transporte TEXT,
-    datos_estado_transporte TEXT,
-    datos_terrenos INTEGER,
-    datos_celular INTEGER,
-    datos_cantidad_celulare INTEGER,
-    datos_plan_celular INTEGER,
-    datos_observacion TEXT,
-    datos_resultado TEXT,
-    datos_resultado_sistema TEXT,
-    datos_estado INTEGER DEFAULT 1,
-    datos_consentimiento INTEGER DEFAULT 1,
-    datos_created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    datos_updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (id_users) REFERENCES tbl_users(id_users)
-);
-
-""")
-
 # Crear la tabla tbl_datos_generales_parentesco
 cursor.execute("""
 CREATE TABLE IF NOT EXISTS tbl_datos_generales_parentesco (
@@ -442,9 +342,6 @@ CREATE TABLE IF NOT EXISTS tbl_rol_access  (
     FOREIGN KEY (id_funcionalidad) REFERENCES tbl_funcionalidad(id_funcionalidad)
 )
 """)
-
-# tbl_users
-
 # tbl_users
 
 cursor.execute("""
@@ -482,6 +379,72 @@ CREATE TABLE IF NOT EXISTS tbl_user_rol (
 );
 """)
 
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS tbl_datos_generales_PRUEBA (
+    id_datos_generales INTEGER PRIMARY KEY AUTOINCREMENT,
+
+    datos_cedula_voluntario TEXT NOT NULL,
+
+    datos_parentesco_id INTEGER,
+    datos_provincia INTEGER,
+    datos_canton TEXT,
+    datos_tipo_parroquias TEXT,
+    datos_parroquias INTEGER,
+    datos_comunidades TEXT,
+    datos_barrios TEXT,
+
+    datos_tipo_viviendas INTEGER,
+    datos_techos INTEGER,
+    datos_paredes INTEGER,
+    datos_pisos INTEGER,
+    datos_cuarto INTEGER,
+
+    datos_combustibles_cocina INTEGER,
+    datos_servicios_higienicos INTEGER,
+
+    datos_viviendas INTEGER,
+    datos_pago_vivienda REAL,
+
+    datos_agua INTEGER,
+    datos_pago_agua REAL,
+
+    datos_pago_luz INTEGER,
+    datos_cantidad_luz REAL,
+
+    datos_internet INTEGER,
+    datos_pago_internet REAL,
+
+    datos_tv_cable INTEGER,
+    datos_tv_pago REAL,
+
+    datos_eliminacion_basura INTEGER,
+    datos_lugares_mayor_frecuencia_viveres INTEGER,
+    datos_gastos_viveres_alimentacion INTEGER,
+
+    datos_medio_transporte TEXT,
+    datos_estado_transporte TEXT,
+
+    datos_terrenos INTEGER,
+    datos_celular INTEGER,
+    datos_cantidad_celulare INTEGER,
+    datos_plan_celular INTEGER,
+
+    datos_observacion TEXT,
+    datos_resultado TEXT,
+    datos_resultado_sistema TEXT,
+
+    datos_estado INTEGER DEFAULT 1,
+    datos_consentimiento INTEGER DEFAULT 1,
+
+    datos_created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    datos_updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+""")
+
+# cursor.execute("""
+# ALTER TABLE tbl_datos_generales
+# ADD COLUMN datos_cedula_voluntario TEXT NOT NULL DEFAULT '';
+# """)
 
 conn.commit()
 conn.close()
