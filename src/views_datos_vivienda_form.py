@@ -3,6 +3,7 @@ from data_base_models import *
 from helper import *
 from data_base_insert import insert_datos_generales
 
+
 def datos_vivienda_form(page: ft.Page):
     txt_Datos_vivienda = ft.Text("Datos vivienda", size=18, weight=ft.FontWeight.BOLD)
     
@@ -88,7 +89,6 @@ def datos_vivienda_form(page: ft.Page):
     datos_pago_luz = money_input("Pago de luz")
     
     datos_cantidad_luz = ft.TextField(label="Cantidad de luz consumida", value="0", input_filter=ft.NumbersOnlyInputFilter())
-    page.update()
     
 # ------------- internet -------------------
     datos_pago_internet = money_input(
@@ -162,7 +162,8 @@ def datos_vivienda_form(page: ft.Page):
 
     def eliminar_fila(row):
         tablaVehiculos.rows.remove(row)
-        page.update()
+        tablaVehiculos.update()  
+
 
     tablaVehiculos = ft.DataTable(
         columns=[
@@ -195,7 +196,7 @@ def datos_vivienda_form(page: ft.Page):
 
             # 4️⃣ Agregar fila a la tabla
             tablaVehiculos.rows.append(row)
-            page.update()
+            tablaVehiculos.update()
 
     btn_agregar_vehiculo = ft.ElevatedButton(
         "Agregar",
@@ -206,7 +207,7 @@ def datos_vivienda_form(page: ft.Page):
     def toggle_celular(e):
         datos_cantidad_celulare.read_only = (datos_celular.value != "Sí")
         datos_cantidad_celulare.value = "0" if datos_cantidad_celulare.read_only else ""
-        page.update()
+        datos_cantidad_celulare.update()
 
     datos_terrenos = ft.Dropdown(label="¿Posee terrenos?", options=[ft.dropdown.Option("Sí"), ft.dropdown.Option("No")], width=260)
     datos_celular = ft.Dropdown(label="¿Posee celular?", options=[ft.dropdown.Option("Sí"), ft.dropdown.Option("No")], on_change=toggle_celular, width=260)
@@ -230,21 +231,8 @@ def datos_vivienda_form(page: ft.Page):
     ], width=260)
     criterioMensaje = ft.Text("Criterio", size=18, weight=ft.FontWeight.BOLD)
 
-    def enviar(e):
-        # 1️⃣ VALIDACIÓN PRIMERO
-        if not datos_cedula_voluntario.value:
-            page.snack_bar = ft.SnackBar(
-                ft.Text("Debe ingresar la cédula o pasaporte")
-            )
-            page.snack_bar.open = True
-            page.update()
-            return
-
-        # 2️⃣ DESHABILITAR BOTÓN (evita doble click)
-        btn_enviar.disabled = True
-        page.update()
-
-        data = {
+    def obtener_datos_vivienda():
+        return  {
             "datos_cedula_voluntario": datos_cedula_voluntario.value,
             "datos_comunidades": datos_comunidades.value,
             "datos_barrios": datos_barrios.value,
@@ -277,31 +265,33 @@ def datos_vivienda_form(page: ft.Page):
             "datos_resultado_sistema": datos_resultado_sistema.value,
         }
 
-        try:
-            insert_datos_generales(data, tablaVehiculos)
+    def validar_vivienda():
+        campos_obligatorios = [
+            datos_comunidades,
+            datos_barrios,
+            datos_tipo_viviendas,
+            datos_techos,
+            datos_paredes,
+            datos_pisos,
+            datos_viviendas,
+            datos_agua,
+            datos_eliminacion_basura,
+        ]
 
-            page.snack_bar = ft.SnackBar(
-                ft.Text("Datos guardados correctamente")
-            )
-            page.snack_bar.open = True
+        valido = True
+        for campo in campos_obligatorios:
+            if not campo.value:
+                campo.error_text = "Campo obligatorio"
+                valido = False
+            else:
+                campo.error_text = None
+            campo.update()
 
-        except Exception as ex:
-            page.snack_bar = ft.SnackBar(
-                ft.Text(f"Error al guardar: {ex}")
-            )
-            page.snack_bar.open = True
-
-        finally:
-            # 3️⃣ REHABILITAR BOTÓN
-            btn_enviar.disabled = False
-            page.update()
-
-
-    btn_enviar = ft.ElevatedButton("Enviar", on_click=enviar)
+        return valido
 
 
     # === AQUÍ LA MAGIA: RETORNAR UN CONTROL ===
-    return ft.Column([
+    contenido = ft.Column([
         ft.Row([txt_Datos_vivienda], wrap=True),    
         ft.Row([datos_comunidades, datos_barrios], wrap=True),
         ft.Row([datos_tipo_viviendas, datos_techos, datos_paredes, datos_pisos], wrap=True),
@@ -331,7 +321,10 @@ def datos_vivienda_form(page: ft.Page):
         datos_observacion,
         ft.Row([datos_resultado_sistema, datos_resultado, criterioMensaje], wrap=True),
         ft.Row([movilidad,datos_cedula_voluntario], wrap=True),  
-        btn_enviar
+        
+
+        
         
         
     ], spacing=20)
+    return contenido, obtener_datos_vivienda, validar_vivienda, tablaVehiculos

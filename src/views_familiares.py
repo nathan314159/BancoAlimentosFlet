@@ -110,8 +110,7 @@ def familiares_view(page: ft.Page):
     genero.options = [ft.dropdown.Option(i) for i in get_genero()]
     nivel_educacion.options = [ft.dropdown.Option(i) for i in get_educacion()]
     estado_civil.options = [ft.dropdown.Option(i) for i in get_estado_civil()]
-    page.update()
-
+    
     # -------- MOVILIDAD --------
     def toggle_tipo_documento(e):
         documento.disabled = False
@@ -286,6 +285,32 @@ def familiares_view(page: ft.Page):
 
         page.update()
 
+    def obtener_familiares():
+        familiares = []
+
+        for row in tabla_familiares.rows:
+            familiares.append({
+                "nombres": row.cells[0].content.value,
+                "apellidos": row.cells[1].content.value,
+                "documento": row.cells[2].content.value,
+                "telefono": row.cells[3].content.value,
+                "etnia": row.cells[4].content.value,
+                "genero": row.cells[5].content.value,
+                "nivel_educacion": row.cells[6].content.value,
+                "fecha_nacimiento": row.cells[7].content.value,
+                "edad": row.cells[8].content.value,
+                "estado_civil": row.cells[9].content.value,
+                "discapacidad": row.cells[10].content.value,
+                "enfermedad": row.cells[11].content.value,
+                "trabaja": row.cells[12].content.value,
+                "ocupacion": row.cells[13].content.value,
+                "ingreso": row.cells[14].content.value,
+                "parentesco": row.cells[15].content.value,
+            })
+
+        return familiares
+
+
     # -------- WRAPPER CON SCROLL --------
     tabla_scroll = ft.Container(
         content=ft.Column(
@@ -317,4 +342,4 @@ def familiares_view(page: ft.Page):
         ft.Row([ingreso, parentesco], wrap=True),
 
         ft.ElevatedButton("Añadir familiar", on_click=add_familiar)
-    ])
+    ]), obtener_familiares
