@@ -9,9 +9,13 @@ DB_PATH = os.path.join(BASE_DIR, "app.db")
 
 API_URL = "http://localhost/bancoAlimentos/sync-encuesta"
 
-def mapear_encuesta(cursor, row):
+def mapear_encuesta(cursor, encuesta):
+    if cursor.description is None:
+        return None
+
     columnas = [col[0] for col in cursor.description]
-    return dict(zip(columnas, row))
+    return dict(zip(columnas, encuesta))
+
 
 def sincronizar_encuestas():
     conn = sqlite3.connect(DB_PATH)
@@ -27,6 +31,8 @@ def sincronizar_encuestas():
 
     for encuesta in encuestas:
         data = mapear_encuesta(cursor, encuesta)
+        if data is None:
+            return
 
         try:
             response = requests.post(API_URL, json=data, timeout=10)
