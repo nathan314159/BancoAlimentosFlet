@@ -20,6 +20,7 @@ def insert_datos_generales(data: dict, tablaVehiculos):
 
         cursor.execute("""
             INSERT INTO tbl_datos_generales_PRUEBA (
+                uuid,
                 datos_cedula_voluntario,
                 datos_parentesco_id,
                 datos_provincia,
@@ -29,8 +30,8 @@ def insert_datos_generales(data: dict, tablaVehiculos):
                 datos_comunidades,
                 datos_barrios,
                 datos_tipo_viviendas,
-                datos_techos,
                 
+                datos_techos,
                 datos_paredes,
                 datos_pisos,
                 datos_cuarto,
@@ -40,8 +41,8 @@ def insert_datos_generales(data: dict, tablaVehiculos):
                 datos_pago_vivienda,
                 datos_agua,
                 datos_pago_agua,
-                datos_pago_luz,
                 
+                datos_pago_luz,                
                 datos_cantidad_luz,
                 datos_internet,
                 datos_pago_internet,
@@ -51,8 +52,8 @@ def insert_datos_generales(data: dict, tablaVehiculos):
                 datos_lugares_mayor_frecuencia_viveres,
                 datos_gastos_viveres_alimentacion,
                 datos_medio_transporte,
-                datos_estado_transporte,
                 
+                datos_estado_transporte,
                 datos_terrenos,
                 datos_celular,
                 datos_cantidad_celulare,
@@ -60,8 +61,9 @@ def insert_datos_generales(data: dict, tablaVehiculos):
                 datos_observacion,
                 datos_resultado,
                 datos_resultado_sistema
-            ) VALUES (?,?,?,?,?,?,?,?,?,?,  ?,?,?,?,?,?,?,?,?,?,  ?,?,?,?,?,?,?,?,?,?,  ?,?,?,?,?,?,?)
+            ) VALUES (?,?,?,?,?,?,?,?,?,?,  ?,?,?,?,?,?,?,?,?,?,  ?,?,?,?,?,?,?,?,?,?,  ?,?,?,?,?,?,?,?)
         """, (
+            data["uuid"],
             data["datos_cedula_voluntario"],
             None,
             data["provincia"],

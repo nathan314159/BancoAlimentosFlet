@@ -382,6 +382,7 @@ CREATE TABLE IF NOT EXISTS tbl_user_rol (
 cursor.execute("""
 CREATE TABLE IF NOT EXISTS tbl_datos_generales_PRUEBA (
     id_datos_generales INTEGER PRIMARY KEY AUTOINCREMENT,
+    uuid TEXT UNIQUE NOT NULL,
 
     datos_cedula_voluntario TEXT NOT NULL,
 
@@ -437,9 +438,12 @@ CREATE TABLE IF NOT EXISTS tbl_datos_generales_PRUEBA (
     datos_consentimiento INTEGER DEFAULT 1,
 
     datos_created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    datos_updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    datos_updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    sincronizado INTEGER DEFAULT 0
+
 );
 """)
+
 
 # cursor.execute("""
 # ALTER TABLE tbl_datos_generales
