@@ -6,6 +6,7 @@ from views_datos_vivienda_form import datos_vivienda_form
 from data_base_insert import insert_datos_generales
 import uuid
 from sync_service import sincronizar_encuestas
+from helper import *
 
 def main(page: ft.Page):
     page.title = "Formulario de Datos Generales"
@@ -50,14 +51,60 @@ def main(page: ft.Page):
             return
 
         print(">>> PASÓ VALIDACIONES")
+        
 
+
+        uuid_encuesta = str(uuid.uuid4())
+
+        data_vivienda = get_vivienda()
+
+        # 🔹 CONVERSIÓN DE CAMPOS NUMÉRICOS
+        data_vivienda["datos_cuarto"] = safe_int(data_vivienda["datos_cuarto"])
+        data_vivienda["datos_pago_vivienda"] = money_to_int(data_vivienda["datos_pago_vivienda"])
+        data_vivienda["datos_pago_agua"] = money_to_int(data_vivienda["datos_pago_agua"])
+        data_vivienda["datos_pago_luz"] = money_to_int(data_vivienda["datos_pago_luz"])
+        data_vivienda["datos_cantidad_luz"] = safe_int(data_vivienda["datos_cantidad_luz"])
+        data_vivienda["datos_pago_internet"] = money_to_int(data_vivienda["datos_pago_internet"])
+        data_vivienda["datos_tv_pago"] = money_to_int(data_vivienda["datos_tv_pago"])
+        data_vivienda["datos_gastos_viveres"] = money_to_int(data_vivienda["datos_gastos_viveres"])
+        data_vivienda["datos_cantidad_celulare"] = safe_int(data_vivienda["datos_cantidad_celulare"])
+
+        # Convierte los nombres en IDs usando la búsqueda flexible
+        data_vivienda["datos_tipo_viviendas"] = get_item_ids_flexible(
+            data_vivienda["datos_tipo_viviendas"], 22
+        )[0] if get_item_ids_flexible(data_vivienda["datos_tipo_viviendas"], 22) else 0
+
+        data_vivienda["datos_techos"] = get_item_ids_flexible(
+            data_vivienda["datos_techos"], 23
+        )[0] if get_item_ids_flexible(data_vivienda["datos_techos"], 23) else 0
+
+        data_vivienda["datos_paredes"] = get_item_ids_flexible(
+            data_vivienda["datos_paredes"], 24
+        )[0] if get_item_ids_flexible(data_vivienda["datos_paredes"], 24) else 0
+
+        data_vivienda["datos_pisos"] = get_item_ids_flexible(
+            data_vivienda["datos_pisos"], 25
+        )[0] if get_item_ids_flexible(data_vivienda["datos_pisos"], 25) else 0
+
+        data_vivienda["datos_combustibles_cocina"] = get_item_ids_flexible(
+            data_vivienda["datos_combustibles_cocina"], 26
+        )[0] if get_item_ids_flexible(data_vivienda["datos_combustibles_cocina"], 26) else 0
+
+        data_vivienda["datos_servicios_higienicos"] = get_item_ids_flexible(
+            data_vivienda["datos_servicios_higienicos"], 27
+        )[0] if get_item_ids_flexible(data_vivienda["datos_servicios_higienicos"], 27) else 0
+
+        data_vivienda["datos_viviendas"] = get_item_ids_flexible(
+            data_vivienda["datos_viviendas"], 28
+        )[0] if get_item_ids_flexible(data_vivienda["datos_viviendas"], 28) else 0
         uuid_encuesta = str(uuid.uuid4())
         
         data = {
             "uuid": uuid_encuesta,
             **get_ubicacion(),
             "familiares": get_familiares(),
-            **get_vivienda(),
+            # **get_vivienda(),
+            **data_vivienda,
         }
 
         print(">>> DATA ARMADA:", data)
