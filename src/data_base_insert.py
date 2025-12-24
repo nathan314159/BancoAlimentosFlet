@@ -12,6 +12,7 @@ def obtener_transportes(tablaVehiculos):
     return "/".join(medios), "/".join(estados)
 
 def insert_datos_generales(data: dict, tablaVehiculos):
+    print("Provincia que voy a insertar:", data.get("provincia"))
     conn = get_connection()
     cursor = conn.cursor()
 
