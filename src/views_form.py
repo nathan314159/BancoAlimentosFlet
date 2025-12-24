@@ -57,6 +57,7 @@ def main(page: ft.Page):
         uuid_encuesta = str(uuid.uuid4())
 
         data_vivienda = get_vivienda()
+        print(">>> data_vivienda crudo:", data_vivienda)
 
         # 🔹 CONVERSIÓN DE CAMPOS NUMÉRICOS
         data_vivienda["datos_cuarto"] = safe_int(data_vivienda["datos_cuarto"])
@@ -97,6 +98,21 @@ def main(page: ft.Page):
         data_vivienda["datos_viviendas"] = get_item_ids_flexible(
             data_vivienda["datos_viviendas"], 28
         )[0] if get_item_ids_flexible(data_vivienda["datos_viviendas"], 28) else 0
+        uuid_encuesta = str(uuid.uuid4())
+        
+        data_vivienda["datos_agua"] = get_item_ids_flexible(
+            data_vivienda["datos_agua"], 29
+        )[0] if get_item_ids_flexible(data_vivienda["datos_agua"], 29) else 0
+        uuid_encuesta = str(uuid.uuid4())
+        
+        data_vivienda["datos_eliminacion_basura"] = get_item_ids_flexible(
+            data_vivienda["datos_eliminacion_basura"], 30
+        )[0] if get_item_ids_flexible(data_vivienda["datos_eliminacion_basura"], 30) else 0
+        uuid_encuesta = str(uuid.uuid4())
+        
+        data_vivienda["datos_lugares_viveres"] = get_item_ids_flexible(
+            data_vivienda["datos_lugares_viveres"], 31
+        )[0] if get_item_ids_flexible(data_vivienda["datos_lugares_viveres"], 31) else 0
         uuid_encuesta = str(uuid.uuid4())
         
         data = {
