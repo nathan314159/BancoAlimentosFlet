@@ -57,6 +57,8 @@ def main(page: ft.Page):
         uuid_encuesta = str(uuid.uuid4())
 
         data_vivienda = get_vivienda()
+        familiares  = get_familiares()
+
         print(">>> data_vivienda crudo:", data_vivienda)
 
         # 🔹 CONVERSIÓN DE CAMPOS NUMÉRICOS
@@ -115,10 +117,39 @@ def main(page: ft.Page):
         )[0] if get_item_ids_flexible(data_vivienda["datos_lugares_viveres"], 31) else 0
         uuid_encuesta = str(uuid.uuid4())
         
+        # Convierte los nombres en IDs usando la búsqueda flexible (PARENTESCO)
+
+        for familiar in familiares:
+            familiar["datos_parentesco_etnia"] = safe_int(
+                familiar.get("datos_parentesco_etnia", 0)
+            )
+            familiar["datos_parentesco_genero"] = safe_int(
+                familiar.get("datos_parentesco_genero", 0)
+            )
+            familiar["datos_parentesco_nivel_educacion"] = safe_int(
+                familiar.get("datos_parentesco_nivel_educacion", 0)
+            )
+            familiar["datos_parentesco_estado_civil"] = safe_int(
+                familiar.get("datos_parentesco_estado_civil", 0)
+            )
+            
+            familiar["fecha_nacimiento"] = convertir_fecha(
+                familiar.get("fecha_nacimiento")
+            )
+
+            
+            print(
+        "FECHA FINAL PYTHON 👉",
+        familiar.get("datos_parentesco_fecha_de_nacimiento"),
+        type(familiar.get("datos_parentesco_fecha_de_nacimiento"))
+    )
+            
+
+
         data = {
             "uuid": uuid_encuesta,
             **get_ubicacion(),
-            "familiares": get_familiares(),
+            "familiares": familiares,
             # **get_vivienda(),
             **data_vivienda,
         }

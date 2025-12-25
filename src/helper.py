@@ -1,6 +1,7 @@
 # import flet as ft
 import os
 import sqlite3
+from datetime import *
 # def money_input(label="Monto", value="", disabled=False, width=260 ):
 #     def validate_numeric(e):
 #         if field.disabled:   # 👈 CLAVE
@@ -243,3 +244,22 @@ def get_item_ids_flexible(nombre_item: str, id_catalogo: int, db_path=DB_PATH) -
         return [row[0] for row in results]
     finally:
         conn.close()
+
+
+def money_to_float(value):
+    if value is None or value == "":
+        return 0.0
+    try:
+        return float(str(value).replace(",", ""))
+    except ValueError:
+        return 0.0
+
+
+
+def convertir_fecha(fecha_str):
+    try:
+        return datetime.strptime(fecha_str, "%d/%m/%Y").strftime("%Y-%m-%d")
+    except Exception as e:
+        print("❌ Fecha inválida:", fecha_str, e)
+        return None
+
