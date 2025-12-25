@@ -145,7 +145,6 @@ def main(page: ft.Page):
     )
             
 
-
         data = {
             "uuid": uuid_encuesta,
             **get_ubicacion(),

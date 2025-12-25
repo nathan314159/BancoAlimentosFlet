@@ -263,3 +263,20 @@ def convertir_fecha(fecha_str):
         print("❌ Fecha inválida:", fecha_str, e)
         return None
 
+def get_nombre_catalogo(cursor, id_item):
+    """
+    Retorna el nombre (itc_nombre) de un item del catálogo según su ID.
+    """
+    if not id_item:
+        return None
+
+    cursor.execute("""
+        SELECT itc_nombre
+        FROM tbl_item_catalogo
+        WHERE id_item = ?
+          AND itc_estado = 1
+        LIMIT 1
+    """, (id_item,))
+
+    row = cursor.fetchone()
+    return row[0] if row else None

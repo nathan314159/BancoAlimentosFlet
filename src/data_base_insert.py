@@ -198,15 +198,3 @@ def insert_parentescos(cursor, familiares, id_datos_generales):
 
 
 
-
-#         conn.commit()
-#         print(">>> Commit hecho")
-#         cursor.execute("SELECT * FROM tbl_datos_generales_PRUEBA")
-#         print(">>> Registros actuales:", cursor.fetchall())
-#     except Exception as e:
-#         print(">>> ERROR AL INSERTAR:", e)
-#     finally:
-#         conn.close()
-
-
-
