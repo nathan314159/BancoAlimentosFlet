@@ -31,6 +31,56 @@ def buscar_id_catalogo(cursor, nombre, id_catalogo):
     row = cursor.fetchone()
     return row[0] if row else None
 
+def obtener_familiares(cursor, id_datos_generales):
+    cursor.execute("""
+        SELECT
+            dp.datos_parentesco_nombres,
+            dp.datos_parentesco_apellidos,
+            dp.datos_parentesco_documento,
+            dp.datos_parentesco_celular_telf,
+            dp.datos_parentesco_etnia,
+            dp.datos_parentesco_genero,
+            dp.datos_parentesco_nivel_educacion,
+            dp.datos_parentesco_fecha_de_nacimiento,
+            dp.datos_parentesco_edad,
+            dp.datos_parentesco_estado_civil,
+            dp.datos_parentesco_discapacidad,
+            dp.datos_parentesco_enfermedad_catastrofica,
+            dp.datos_parentesco_trabaja,
+            dp.datos_parentesco_ocupacion,
+            dp.datos_parentesco_ingreso_mensual,
+            dp.datos_parentesco_parentesco
+        FROM tbl_datos_parentesco dp
+        JOIN tbl_datos_generales_parentesco dgp
+          ON dp.id_datos_parentesco = dgp.id_datos_parentescos
+        WHERE dgp.id_datos_generales = ?
+    """, (id_datos_generales,))
+
+    familiares = []
+
+    for row in cursor.fetchall():
+        familiares.append({
+            "nombres": row[0],
+            "apellidos": row[1],
+            "documento": row[2],
+            "telefono": row[3],
+            "etnia": row[4],
+            "genero": row[5],
+            "nivel_educacion": row[6],
+            "fecha_nacimiento": row[7],
+            "edad": row[8],
+            "estado_civil": row[9],
+            "discapacidad": row[10],
+            "enfermedad": row[11],
+            "trabaja": row[12],
+            "ocupacion": row[13],
+            "ingreso": row[14],
+            "parentesco": row[15],
+        })
+
+    return familiares
+
+    
 # -------------------------
 # SINCRONIZAR ENCUESTAS
 # -------------------------
@@ -52,7 +102,9 @@ def sincronizar_encuestas():
 
     for encuesta in encuestas:
         data = dict(zip(columnas, encuesta))
-
+        familiares = obtener_familiares(cursor, data["id_datos_generales"])
+        print("DEBUG familiares reales:", familiares)
+        
         # -------------------------
         # 🔍 MAPEAR UBICACIÓN
         # -------------------------
@@ -83,7 +135,7 @@ def sincronizar_encuestas():
         print("🔎 Provincia:", data.get("datos_provincia"), "→", provincia_id)
         print("🔎 Cantón:", data.get("datos_canton"), "→", canton_id)
         print("🔎 Parroquia:", data.get("datos_parroquias"), "→", parroquia_id)
-
+        
         # -------------------------
         # 📦 JSON PARA API
         # -------------------------
@@ -128,7 +180,8 @@ def sincronizar_encuestas():
             "datos_observacion": data.get("datos_observacion"),
             "datos_consentimiento": data.get("datos_consentimiento"),
 
-            "familiares": data.get("familiares", [])
+            "familiares": familiares
+
         }
 
         print("📨 JSON enviado:", data_api)

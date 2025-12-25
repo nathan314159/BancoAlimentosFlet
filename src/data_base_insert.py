@@ -13,6 +13,7 @@ def obtener_transportes(tablaVehiculos):
 
 def insert_datos_generales(data: dict, tablaVehiculos):
     print("Provincia que voy a insertar:", data.get("provincia"))
+    
     conn = get_connection()
     cursor = conn.cursor()
 
@@ -105,6 +106,7 @@ def insert_datos_generales(data: dict, tablaVehiculos):
         ))
 
         id_general = cursor.lastrowid
+        print("DEBUG familiares al guardar en SQLite:", data["familiares"])
 
         primer_parentesco = insert_parentescos(
             cursor,
