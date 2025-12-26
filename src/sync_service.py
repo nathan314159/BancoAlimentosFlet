@@ -143,7 +143,7 @@ def sincronizar_encuestas():
         provincia_id = buscar_id_catalogo(cursor, data.get("datos_provincia"), 18)
         canton_id = buscar_id_catalogo(cursor, data.get("datos_canton"), 19)
         parroquia_id = buscar_id_catalogo(cursor, data.get("datos_parroquias"), 20)
-        tipo_parroquia_id = 20 if parroquia_id else None
+        parroquia_nombre, tipo_parroquia = get_nombre_y_tipo_parroquia(cursor, parroquia_id)
 
         # -------------------------
         # 📦 JSON PARA API
@@ -155,7 +155,7 @@ def sincronizar_encuestas():
             "provincia": provincia_id,
             "canton": get_nombre_catalogo(cursor, canton_id),
             "parroquia": parroquia_id,
-            "tipo_parroquia": tipo_parroquia_id,
+            "tipo_parroquia": tipo_parroquia,
 
             "datos_comunidades": data.get("datos_comunidades"),
             "datos_barrios": data.get("datos_barrios"),
