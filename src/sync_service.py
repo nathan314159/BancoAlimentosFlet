@@ -1,6 +1,6 @@
 import os
 import sqlite3
-import requests
+import httpx
 from helper import *
 
 # -------------------------
@@ -197,7 +197,9 @@ def sincronizar_encuestas():
         # 🌐 ENVIAR A API
         # -------------------------
         try:
-            response = requests.post(API_URL, json=data_api, timeout=10)
+            with httpx.Client(timeout=10) as client:
+                response = client.post(API_URL, json=data_api)
+
 
             if response.status_code == 200:
                 cursor.execute("""
