@@ -81,6 +81,10 @@ def datos_vivienda_form(page: ft.Page):
 
     datos_agua = ft.Dropdown(label="Servicio de agua", width=260)
     load_dropdown_options(datos_agua, get_servicio_agua())
+    print("OPCIONES AGUA:")
+    for opt in datos_agua.options:
+        print(opt.key, opt.text)
+
     
     datos_pago_agua = ft.TextField(label="Pago de agua", value="0")
     datos_pago_agua = money_input("Pago agua")
