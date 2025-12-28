@@ -8,7 +8,8 @@ from helper import *
 # -------------------------
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(BASE_DIR, "app.db")
-API_URL = "http://localhost/bancoAlimentos/sync-encuesta"
+# API_URL = "http://localhost/bancoAlimentos/sync-encuesta"
+API_URL = "http://192.168.0.105/bancoAlimentos/sync-encuesta"
 
 # -------------------------
 # FUNCIÓN AUXILIAR

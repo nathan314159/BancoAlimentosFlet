@@ -1,0 +1,6 @@
+name: first-flet-app
+description: My Flet App
+version: 1.0.0
+
+android:
+  usesCleartextTraffic: true
