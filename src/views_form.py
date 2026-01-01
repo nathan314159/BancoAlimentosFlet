@@ -7,13 +7,33 @@ from data_base_insert import insert_datos_generales
 import uuid
 from sync_service import sincronizar_encuestas
 from helper import *
-
+import os
+import sqlite3
 def main(page: ft.Page):
     page.title = "Formulario de Datos Generales"
     page.scroll = "auto"
     page.padding = 20
 
     formulario_completo = ft.Column(visible=False)
+    
+    estado_sync_txt = ft.Text(
+        value="⏳ Verificando encuestas pendientes...",
+        size=12,
+        color=ft.Colors.GREY
+    )
+
+    def contar_pendientes():
+        BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+        DB_PATH = os.path.join(BASE_DIR, "app.db")
+
+        conn = sqlite3.connect(DB_PATH)
+        cursor = conn.cursor()
+        cursor.execute(
+            "SELECT COUNT(*) FROM tbl_datos_generales_PRUEBA WHERE sincronizado = 0"
+        )
+        total = cursor.fetchone()[0]
+        conn.close()
+        return total
 
     def toggle_form(e):
         formulario_completo.visible = e.control.value
@@ -34,25 +54,27 @@ def main(page: ft.Page):
 
         if not checkbox.value:
             print(">>> NO aceptó consentimiento")
-            page.snack_bar = ft.SnackBar(
-                ft.Text("Debe aceptar el consentimiento informado")
+            page.open(
+                ft.SnackBar(
+                    content=ft.Text("Debe aceptar el consentimiento informado"),
+                    duration=4000
+                )
             )
-            page.snack_bar.open = True
-            page.update()
             return
 
         if not validar_vivienda():
             print(">>> NO pasó validación de vivienda")
-            page.snack_bar = ft.SnackBar(
-                ft.Text("Complete los datos de la vivienda")
+            page.open(
+                ft.SnackBar(
+                    content=ft.Text("Complete los datos de la vivienda"),
+                    duration=4000
+                )
             )
-            page.snack_bar.open = True
-            page.update()
             return
 
         print(">>> PASÓ VALIDACIONES")
         
-
+        
 
         uuid_encuesta = str(uuid.uuid4())
 
@@ -142,6 +164,7 @@ def main(page: ft.Page):
         "FECHA FINAL PYTHON 👉",
         familiar.get("datos_parentesco_fecha_de_nacimiento"),
         type(familiar.get("datos_parentesco_fecha_de_nacimiento"))
+        
     )
             
 
@@ -160,26 +183,56 @@ def main(page: ft.Page):
             last_id = insert_datos_generales(data, tablaVehiculos)
             print(">>> ID INSERTADO:", last_id)
 
-            page.snack_bar = ft.SnackBar(
-                ft.Text("Formulario guardado correctamente")
+            page.open(
+                ft.SnackBar(
+                    content=ft.Text("✅ Formulario guardado correctamente"),
+                    bgcolor=ft.Colors.GREEN_600,
+                    duration=4000
+                )
             )
+            actualizar_estado_sync()
 
         except Exception as e:
-            print(">>> ERROR REAL:", e)
-            page.snack_bar = ft.SnackBar(
-                ft.Text(f"Error al guardar: {e}")
+            page.open(
+                ft.SnackBar(
+                    content=ft.Text(f"❌ Error al guardar: {e}"),
+                    bgcolor=ft.Colors.RED_600,
+                    duration=4000
+                )
             )
 
-        page.snack_bar.open = True
-        page.update()
+
+
+
+
 
     def btn_sincronizar(e):
-        sincronizar_encuestas()
-        page.snack_bar = ft.SnackBar(
-            ft.Text("Sincronización ejecutada")
-        )
-        page.snack_bar.open = True
+        ok = sincronizar_encuestas()
+        actualizar_estado_sync()
         page.update()
+
+        if not ok:
+            page.open(
+                ft.SnackBar(
+                    content=ft.Text(
+                        "🚫 SERVIDOR NO DISPONIBLE (Apache apagado)"
+                    ),
+                    bgcolor=ft.Colors.RED_600,
+                    show_close_icon=True,
+                )
+            )
+            return
+
+        page.open(
+            ft.SnackBar(
+                content=ft.Text("✅ Sincronizado correctamente"),
+                bgcolor=ft.Colors.GREEN_600,
+                duration=4000
+            )
+        )
+
+
+
 
 
     formulario_completo.controls = [
@@ -189,30 +242,43 @@ def main(page: ft.Page):
         ft.Divider(),
         vivienda_ui,
         ft.Divider(),
-        ft.Row(
+        ft.Row( 
             controls=[
                 ft.ElevatedButton("Enviar formulario", on_click=enviar),
-                ft.ElevatedButton(
-                    "Sincronizar",
-                    icon=ft.Icons.SYNC,
-                    on_click=btn_sincronizar
-                ),
             ],
-            alignment=ft.MainAxisAlignment.SPACE_BETWEEN
         )
     ]
+    
 
+    def actualizar_estado_sync():
+        pendientes = contar_pendientes()
+        estado_sync_txt.value = f"📤 Encuestas pendientes: {pendientes}"
+        estado_sync_txt.update()
+
+            
 
     page.add(
         ft.Column(
             controls=[
+                ft.Row(
+                    controls=[
+                        ft.ElevatedButton(
+                            "🔄 Sincronizar datos pendientes",
+                            icon=ft.Icons.SYNC,
+                            on_click=btn_sincronizar
+                        ),
+                        estado_sync_txt
+                    ],
+                    alignment=ft.MainAxisAlignment.END
+                ),
+                ft.Divider(),
                 consentimiento,
                 ft.Divider(),
                 formulario_completo,
             ]
         )
     )
-
+    actualizar_estado_sync()
 
 if __name__ == "__main__":
     ft.app(target=main)

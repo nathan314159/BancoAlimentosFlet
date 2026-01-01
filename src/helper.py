@@ -3,6 +3,8 @@ import os
 import sqlite3
 from datetime import *
 import flet as ft
+import socket
+import httpx
 
 def money_input(label="Monto", value="", disabled=False, width=260):
     def validate_numeric(e):
@@ -169,3 +171,29 @@ def convertir_fecha(fecha_str):
         print("❌ Fecha inválida:", fecha_str, e)
         return None
 
+
+
+def hay_internet(timeout=3):
+    try:
+        socket.setdefaulttimeout(timeout)
+        socket.socket(socket.AF_INET, socket.SOCK_STREAM).connect(("8.8.8.8", 53))
+        return True
+    except Exception:
+        return False
+
+import httpx
+
+def backend_disponible(url, timeout=3):
+    try:
+        r = httpx.get(url, timeout=timeout)
+        return True
+    except httpx.ConnectError:
+        return False
+    except Exception as e:
+        print("Backend check error:", e)
+        return False
+
+
+def escribir_estado_sync(pendientes):
+    with open("estado_sync.txt", "w", encoding="utf-8") as f:
+        f.write(f"⏳ Encuestas pendientes: {pendientes}")
