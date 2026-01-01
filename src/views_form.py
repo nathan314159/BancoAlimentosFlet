@@ -75,6 +75,22 @@ def main(page: ft.Page):
         print(">>> PASÓ VALIDACIONES")
         
         
+        CATALOGOS_VIVIENDA = {
+            "datos_tipo_viviendas": 22,
+            "datos_techos": 23,
+            "datos_paredes": 24,
+            "datos_pisos": 25,
+            "datos_combustibles_cocina": 26,
+            "datos_servicios_higienicos": 27,
+            "datos_viviendas": 28,
+            "datos_agua": 29,
+            "datos_eliminacion_basura": 30,
+            "datos_lugares_viveres": 31,
+        }
+                
+        def map_catalogo(valor, catalogo_id):
+            ids = get_item_ids_flexible(valor, catalogo_id)
+            return ids[0] if ids else 0
 
         uuid_encuesta = str(uuid.uuid4())
 
@@ -84,60 +100,45 @@ def main(page: ft.Page):
         print(">>> data_vivienda crudo:", data_vivienda)
 
         # 🔹 CONVERSIÓN DE CAMPOS NUMÉRICOS
-        data_vivienda["datos_cuarto"] = safe_int(data_vivienda["datos_cuarto"])
-        data_vivienda["datos_pago_vivienda"] = money_to_int(data_vivienda["datos_pago_vivienda"])
-        data_vivienda["datos_pago_agua"] = money_to_int(data_vivienda["datos_pago_agua"])
-        data_vivienda["datos_pago_luz"] = money_to_int(data_vivienda["datos_pago_luz"])
-        data_vivienda["datos_cantidad_luz"] = safe_int(data_vivienda["datos_cantidad_luz"])
-        data_vivienda["datos_pago_internet"] = money_to_int(data_vivienda["datos_pago_internet"])
-        data_vivienda["datos_tv_pago"] = money_to_int(data_vivienda["datos_tv_pago"])
-        data_vivienda["datos_gastos_viveres"] = money_to_int(data_vivienda["datos_gastos_viveres"])
-        data_vivienda["datos_cantidad_celulare"] = safe_int(data_vivienda["datos_cantidad_celulare"])
+        # data_vivienda["datos_cuarto"] = safe_int(data_vivienda["datos_cuarto"])
+        # data_vivienda["datos_pago_vivienda"] = money_to_int(data_vivienda["datos_pago_vivienda"])
+        # data_vivienda["datos_pago_agua"] = money_to_int(data_vivienda["datos_pago_agua"])
+        # data_vivienda["datos_pago_luz"] = money_to_int(data_vivienda["datos_pago_luz"])
+        # data_vivienda["datos_cantidad_luz"] = safe_int(data_vivienda["datos_cantidad_luz"])
+        # data_vivienda["datos_pago_internet"] = money_to_int(data_vivienda["datos_pago_internet"])
+        # data_vivienda["datos_tv_pago"] = money_to_int(data_vivienda["datos_tv_pago"])
+        # data_vivienda["datos_gastos_viveres"] = money_to_int(data_vivienda["datos_gastos_viveres"])
+        # data_vivienda["datos_cantidad_celulare"] = safe_int(data_vivienda["datos_cantidad_celulare"])
+        
+        INT_FIELDS = [
+            "datos_cuarto",
+            "datos_cantidad_luz",
+            "datos_cantidad_celulare",
+        ]
+
+        MONEY_FIELDS = [
+            "datos_pago_vivienda",
+            "datos_pago_agua",
+            "datos_pago_luz",
+            "datos_pago_internet",
+            "datos_tv_pago",
+            "datos_gastos_viveres",
+        ]
+
+        for field in INT_FIELDS:
+            data_vivienda[field] = safe_int(data_vivienda.get(field))
+
+        for field in MONEY_FIELDS:
+            data_vivienda[field] = money_to_int(data_vivienda.get(field))
+
 
         # Convierte los nombres en IDs usando la búsqueda flexible
-        data_vivienda["datos_tipo_viviendas"] = get_item_ids_flexible(
-            data_vivienda["datos_tipo_viviendas"], 22
-        )[0] if get_item_ids_flexible(data_vivienda["datos_tipo_viviendas"], 22) else 0
+        for campo, catalogo_id in CATALOGOS_VIVIENDA.items():
+            data_vivienda[campo] = map_catalogo(
+                data_vivienda.get(campo),
+                catalogo_id
+            )
 
-        data_vivienda["datos_techos"] = get_item_ids_flexible(
-            data_vivienda["datos_techos"], 23
-        )[0] if get_item_ids_flexible(data_vivienda["datos_techos"], 23) else 0
-
-        data_vivienda["datos_paredes"] = get_item_ids_flexible(
-            data_vivienda["datos_paredes"], 24
-        )[0] if get_item_ids_flexible(data_vivienda["datos_paredes"], 24) else 0
-
-        data_vivienda["datos_pisos"] = get_item_ids_flexible(
-            data_vivienda["datos_pisos"], 25
-        )[0] if get_item_ids_flexible(data_vivienda["datos_pisos"], 25) else 0
-
-        data_vivienda["datos_combustibles_cocina"] = get_item_ids_flexible(
-            data_vivienda["datos_combustibles_cocina"], 26
-        )[0] if get_item_ids_flexible(data_vivienda["datos_combustibles_cocina"], 26) else 0
-
-        data_vivienda["datos_servicios_higienicos"] = get_item_ids_flexible(
-            data_vivienda["datos_servicios_higienicos"], 27
-        )[0] if get_item_ids_flexible(data_vivienda["datos_servicios_higienicos"], 27) else 0
-
-        data_vivienda["datos_viviendas"] = get_item_ids_flexible(
-            data_vivienda["datos_viviendas"], 28
-        )[0] if get_item_ids_flexible(data_vivienda["datos_viviendas"], 28) else 0
-        uuid_encuesta = str(uuid.uuid4())
-        
-        data_vivienda["datos_agua"] = get_item_ids_flexible(
-            data_vivienda["datos_agua"], 29
-        )[0] if get_item_ids_flexible(data_vivienda["datos_agua"], 29) else 0
-        uuid_encuesta = str(uuid.uuid4())
-        
-        data_vivienda["datos_eliminacion_basura"] = get_item_ids_flexible(
-            data_vivienda["datos_eliminacion_basura"], 30
-        )[0] if get_item_ids_flexible(data_vivienda["datos_eliminacion_basura"], 30) else 0
-        uuid_encuesta = str(uuid.uuid4())
-        
-        data_vivienda["datos_lugares_viveres"] = get_item_ids_flexible(
-            data_vivienda["datos_lugares_viveres"], 31
-        )[0] if get_item_ids_flexible(data_vivienda["datos_lugares_viveres"], 31) else 0
-        uuid_encuesta = str(uuid.uuid4())
         
         # Convierte los nombres en IDs usando la búsqueda flexible (PARENTESCO)
 
@@ -161,11 +162,10 @@ def main(page: ft.Page):
 
             
             print(
-        "FECHA FINAL PYTHON 👉",
-        familiar.get("datos_parentesco_fecha_de_nacimiento"),
-        type(familiar.get("datos_parentesco_fecha_de_nacimiento"))
-        
-    )
+                "FECHA FINAL PYTHON 👉",
+                familiar.get("datos_parentesco_fecha_de_nacimiento"),
+                type(familiar.get("datos_parentesco_fecha_de_nacimiento"))
+            )
             
 
 
