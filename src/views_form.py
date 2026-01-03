@@ -9,19 +9,20 @@ from sync_service import sincronizar_encuestas
 from helper import *
 import os
 import sqlite3
+
 def main(page: ft.Page):
     page.title = "Formulario de Datos Generales"
     page.scroll = "auto"
     page.padding = 20
 
     formulario_completo = ft.Column(visible=False)
-    
-    estado_sync_txt = ft.Text(
-        value="⏳ Verificando encuestas pendientes...",
-        size=12,
-        color=ft.Colors.GREY
-    )
 
+    btn_sync = ft.ElevatedButton(
+        text="🔄 Sincronizar",
+        icon=ft.Icons.SYNC,
+ 
+    )
+    
     def contar_pendientes():
         BASE_DIR = os.path.dirname(os.path.abspath(__file__))
         DB_PATH = os.path.join(BASE_DIR, "app.db")
@@ -98,17 +99,6 @@ def main(page: ft.Page):
         familiares  = get_familiares()
 
         print(">>> data_vivienda crudo:", data_vivienda)
-
-        # 🔹 CONVERSIÓN DE CAMPOS NUMÉRICOS
-        # data_vivienda["datos_cuarto"] = safe_int(data_vivienda["datos_cuarto"])
-        # data_vivienda["datos_pago_vivienda"] = money_to_int(data_vivienda["datos_pago_vivienda"])
-        # data_vivienda["datos_pago_agua"] = money_to_int(data_vivienda["datos_pago_agua"])
-        # data_vivienda["datos_pago_luz"] = money_to_int(data_vivienda["datos_pago_luz"])
-        # data_vivienda["datos_cantidad_luz"] = safe_int(data_vivienda["datos_cantidad_luz"])
-        # data_vivienda["datos_pago_internet"] = money_to_int(data_vivienda["datos_pago_internet"])
-        # data_vivienda["datos_tv_pago"] = money_to_int(data_vivienda["datos_tv_pago"])
-        # data_vivienda["datos_gastos_viveres"] = money_to_int(data_vivienda["datos_gastos_viveres"])
-        # data_vivienda["datos_cantidad_celulare"] = safe_int(data_vivienda["datos_cantidad_celulare"])
         
         INT_FIELDS = [
             "datos_cuarto",
@@ -201,11 +191,6 @@ def main(page: ft.Page):
                 )
             )
 
-
-
-
-
-
     def btn_sincronizar(e):
         ok = sincronizar_encuestas()
         actualizar_estado_sync()
@@ -230,6 +215,8 @@ def main(page: ft.Page):
                 duration=4000
             )
         )
+    btn_sync.on_click = btn_sincronizar
+
 
 
 
@@ -252,25 +239,22 @@ def main(page: ft.Page):
 
     def actualizar_estado_sync():
         pendientes = contar_pendientes()
-        estado_sync_txt.value = f"📤 Encuestas pendientes: {pendientes}"
-        estado_sync_txt.update()
+        btn_sync.text = f"🔄 Sincronizar ({pendientes} pendientes)"
+        btn_sync.update()
 
-            
+
+
 
     page.add(
         ft.Column(
+            expand=True,
+            alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
             controls=[
                 ft.Row(
-                    controls=[
-                        ft.ElevatedButton(
-                            "🔄 Sincronizar datos pendientes",
-                            icon=ft.Icons.SYNC,
-                            on_click=btn_sincronizar
-                        ),
-                        estado_sync_txt
-                    ],
-                    alignment=ft.MainAxisAlignment.END
+                    alignment=ft.MainAxisAlignment.END,
+                    controls=[btn_sync],
                 ),
+
                 ft.Divider(),
                 consentimiento,
                 ft.Divider(),
