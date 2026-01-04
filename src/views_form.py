@@ -125,7 +125,10 @@ def main(page: ft.Page):
             familiar["datos_parentesco_estado_civil"] = safe_int(familiar.get("datos_parentesco_estado_civil", 0))
             familiar["fecha_nacimiento"] = convertir_fecha(familiar.get("fecha_nacimiento"))
 
-
+        data_vivienda["ingreso_mensual"] = sum(
+            safe_float(f.get("ingreso")) for f in familiares
+        )
+        
         # Armar datos finales
         data = {
             "uuid": uuid_encuesta,
@@ -133,8 +136,14 @@ def main(page: ft.Page):
             "familiares": familiares,
             **data_vivienda,
         }
+        
+        
+        
         print(">>> DATA ARMADA:", data)
+        
+        
 
+        
         # Datos de vehículos
         tabla_vehiculos_data = [
             {"datos_estado_transporte": row.cells[1].content.value} for row in tablaVehiculos.rows
