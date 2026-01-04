@@ -223,7 +223,7 @@ def main(page: ft.Page):
         vivienda_ui,
         ft.Divider(),
         ft.Row(
-            controls=[ft.ElevatedButton("Enviar formulario", on_click=enviar)]
+            controls=[ft.ElevatedButton("Guardar formulario", on_click=enviar)]
         ),
     ]
 

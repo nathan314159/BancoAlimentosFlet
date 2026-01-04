@@ -210,7 +210,12 @@ def escribir_estado_sync(pendientes):
         f.write(f"⏳ Encuestas pendientes: {pendientes}")
 
 
-import sqlite3
+def safe_float(value):
+    try:
+        return float(value)
+    except (ValueError, TypeError):
+        return 0.0
+
 
 def evaluar_resultado(tabla_parentesco, tabla_vehiculos,
                       datos_pago_vivienda, datos_pago_agua,
@@ -253,12 +258,13 @@ def evaluar_resultado(tabla_parentesco, tabla_vehiculos,
             tiene_vehiculo_bueno_o_regular = True
 
     # Determinar resultado según algoritmo
-    if tiene_vehiculo_bueno_o_regular:
-        resultado = "No aprobado"
-    elif diferencia < 0:
+    if diferencia < 0:
         resultado = "Aprobado"
-    else:
+    elif tiene_vehiculo_bueno_o_regular:
         resultado = "No aprobado"
+    else:
+        resultado = "Aprobado"
+
 
     resultado_sistema = resultado
 
@@ -284,8 +290,3 @@ def evaluar_resultado(tabla_parentesco, tabla_vehiculos,
     # Retornar resultado para actualizar la UI
     return resultado, mensaje
 
-def safe_float(value):
-    try:
-        return float(value)
-    except (ValueError, TypeError):
-        return 0.0
