@@ -190,25 +190,26 @@ def main(page: ft.Page):
             )
 
     def btn_sincronizar(e):
-        ok = sincronizar_encuestas()
+        ok, mensaje = sincronizar_encuestas()
+
         actualizar_estado_sync()
         page.update()
         if not ok:
             page.open(
                 ft.SnackBar(
-                    content=ft.Text(
-                        "🚫 SERVIDOR NO DISPONIBLE (Apache apagado)"
-                    ),
+                    content=ft.Text(mensaje),
                     bgcolor=ft.Colors.RED_600,
+                    duration=4000,
                     show_close_icon=True,
                 )
             )
             return
+
         page.open(
             ft.SnackBar(
-                content=ft.Text("✅ Sincronizado correctamente"),
+                content=ft.Text(mensaje),
                 bgcolor=ft.Colors.GREEN_600,
-                duration=4000
+                duration=4000,
             )
         )
 

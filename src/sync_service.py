@@ -107,7 +107,7 @@ def sincronizar_encuestas():
     
     if not encuestas:
         conn.close()
-        return True  # nothing to sync, but OK
+        return True,"No hay encuestas pendientes"
     
     try:
         for encuesta in encuestas:
@@ -218,19 +218,28 @@ def sincronizar_encuestas():
                 conn.commit()
                 print("✅ Sincronizada:", data["uuid"])
             else:
-                print("❌ Error servidor:", response.text)
+                try:
+                    data_error = response.json()
+                    mensaje = data_error.get("message", "Error desconocido del servidor")
+                except Exception:
+                    mensaje = response.text
+
+                conn.close()
+                return False, mensaje
+
     except httpx.ConnectError as e:
         print("🚫 Servidor NO disponible:", e)
         conn.close()
-        return False
+        return False, "Servidor no disponible"
+
 
     except Exception as e:
         print("🚫 Error inesperado:", e)
         conn.close()
-        return False
+        return False, "Servidor no disponible"
     
     conn.close()
-    return True
+    return True, "Sincronización exitosa"
 
 
 # -------------------------
