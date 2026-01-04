@@ -197,3 +197,84 @@ def backend_disponible(url, timeout=3):
 def escribir_estado_sync(pendientes):
     with open("estado_sync.txt", "w", encoding="utf-8") as f:
         f.write(f"⏳ Encuestas pendientes: {pendientes}")
+
+
+import sqlite3
+
+def evaluar_resultado(tabla_parentesco, tabla_vehiculos,
+                      datos_pago_vivienda, datos_pago_agua,
+                      datos_pago_luz, datos_pago_internet,
+                      datos_tv_pago, datos_gastos_viveres_alimentacion,
+                      id_datos_generales):
+    """
+    Evalúa si la persona/familia aprueba según ingreso, gastos y vehículos.
+    Retorna: resultado (Aprobado/No aprobado), mensaje explicativo
+    """
+
+    # Inicializar variables
+    ingreso_mensual = 0
+    total_gastos = 0
+    diferencia = 0
+    tiene_vehiculo_bueno_o_regular = False
+    mensaje = ""
+
+    # Obtener ingreso mensual del primer registro de parentesco
+    if tabla_parentesco and len(tabla_parentesco) > 0:
+        fila = tabla_parentesco[0]
+        # Asegúrate de que 'ingreso_mensual' exista en la tabla_parentesco
+        ingreso_mensual = float(fila.get("ingreso_mensual", 0))
+
+    # Sumar gastos del formulario
+    gasto_vivienda = float(datos_pago_vivienda or 0)
+    gasto_agua = float(datos_pago_agua or 0)
+    gasto_luz = float(datos_pago_luz or 0)
+    gasto_internet = float(datos_pago_internet or 0)
+    gasto_tv = float(datos_tv_pago or 0)
+    gasto_viveres = float(datos_gastos_viveres_alimentacion or 0)
+
+    total_gastos = gasto_vivienda + gasto_agua + gasto_luz + gasto_internet + gasto_tv + gasto_viveres
+    diferencia = ingreso_mensual - total_gastos
+
+    # Evaluar vehículos
+    for fila in tabla_vehiculos:
+        estado = fila.get("datos_estado_transporte", "").strip()
+        if estado in ["Bueno", "Regular"]:
+            tiene_vehiculo_bueno_o_regular = True
+
+    # Determinar resultado según algoritmo
+    if tiene_vehiculo_bueno_o_regular:
+        resultado = "No aprobado"
+    elif diferencia < 0:
+        resultado = "Aprobado"
+    else:
+        resultado = "No aprobado"
+
+    resultado_sistema = resultado
+
+    # Crear mensaje para criterio
+    mensaje = f"Los gastos {'exceden' if diferencia < 0 else 'no exceden'} al ingreso mensual"
+    mensaje += " y " + ("se detectan vehículos con estado regular o bueno" if tiene_vehiculo_bueno_o_regular else "no se detectan vehículos con estado regular o bueno")
+
+    # Guardar resultado en la DB
+    try:
+        with sqlite3.connect("src/app.db") as conn:
+            cursor = conn.cursor()
+            cursor.execute("""
+                UPDATE tbl_datos_generales_PRUEBA
+                SET datos_resultado_sistema = ?,
+                    datos_observacion = ?,
+                    datos_resultado = ?,
+                    datos_updated_at = CURRENT_TIMESTAMP
+                WHERE id_datos_generales = ?
+            """, (resultado_sistema, mensaje, resultado, id_datos_generales))
+    except Exception as e:
+        print("Error al actualizar la base de datos:", e)
+
+    # Retornar resultado para actualizar la UI
+    return resultado, mensaje
+
+def safe_float(value):
+    try:
+        return float(value)
+    except (ValueError, TypeError):
+        return 0.0
