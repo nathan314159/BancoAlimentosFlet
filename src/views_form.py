@@ -49,21 +49,32 @@ def main(page: ft.Page):
 
 
     def enviar(e):
-        # Validaciones básicas
+        print(">>> CLICK EN ENVIAR")
+        print("checkbox.value =", checkbox.value)
+        print("validar_vivienda() =", validar_vivienda())
+        
         if not checkbox.value:
-            page.snack_bar = ft.SnackBar(
-                ft.Text("Debe aceptar el consentimiento informado"),
-                duration=4000,
+            print(">>> NO aceptó consentimiento")
+            
+            page.open(
+                ft.SnackBar(
+                    content=ft.Text("Debe aceptar el consentimiento informado"),
+                    duration=4000
+                )
             )
-            page.snack_bar.open()
             return
 
         if not validar_vivienda():
-            page.snack_bar = ft.SnackBar(
-                ft.Text("Complete los datos de la vivienda"), duration=4000
+            print(">>> NO pasó validación de vivienda")
+            page.open(
+                ft.SnackBar(
+                    content=ft.Text("Complete los datos de la vivienda"),
+                    duration=4000
+                )
             )
-            page.snack_bar.open()
             return
+
+        print(">>> PASÓ VALIDACIONES")
 
         # UUID de la encuesta
         uuid_encuesta = str(uuid.uuid4())
@@ -114,6 +125,7 @@ def main(page: ft.Page):
             familiar["datos_parentesco_estado_civil"] = safe_int(familiar.get("datos_parentesco_estado_civil", 0))
             familiar["fecha_nacimiento"] = convertir_fecha(familiar.get("fecha_nacimiento"))
 
+
         # Armar datos finales
         data = {
             "uuid": uuid_encuesta,
@@ -121,6 +133,7 @@ def main(page: ft.Page):
             "familiares": familiares,
             **data_vivienda,
         }
+        print(">>> DATA ARMADA:", data)
 
         # Datos de vehículos
         tabla_vehiculos_data = [
@@ -149,39 +162,46 @@ def main(page: ft.Page):
         # Guardar en DB
         try:
             last_id = insert_datos_generales(data, tablaVehiculos)
-            page.snack_bar = ft.SnackBar(
-                ft.Text("✅ Formulario guardado correctamente"),
-                bgcolor=ft.Colors.GREEN_600,
-                duration=4000,
+            print(">>> ID INSERTADO:", last_id)
+            page.open(
+                ft.SnackBar(
+                    content=ft.Text("✅ Formulario guardado correctamente"),
+                    bgcolor=ft.Colors.GREEN_600,
+                    duration=4000
+                )
             )
-            page.snack_bar.open()
             actualizar_estado_sync()
         except Exception as e:
-            page.snack_bar = ft.SnackBar(
-                ft.Text(f"❌ Error al guardar: {e}"),
-                bgcolor=ft.Colors.RED_600,
-                duration=4000,
+            page.open(
+                ft.SnackBar(
+                    content=ft.Text(f"❌ Error al guardar: {e}"),
+                    bgcolor=ft.Colors.RED_600,
+                    duration=4000
+                )
             )
-            page.snack_bar.open()
 
     def btn_sincronizar(e):
         ok = sincronizar_encuestas()
         actualizar_estado_sync()
         page.update()
         if not ok:
-            page.snack_bar = ft.SnackBar(
-                ft.Text("🚫 SERVIDOR NO DISPONIBLE (Apache apagado)"),
-                bgcolor=ft.Colors.RED_600,
-                show_close_icon=True,
+            page.open(
+                ft.SnackBar(
+                    content=ft.Text(
+                        "🚫 SERVIDOR NO DISPONIBLE (Apache apagado)"
+                    ),
+                    bgcolor=ft.Colors.RED_600,
+                    show_close_icon=True,
+                )
             )
-            page.snack_bar.open()
             return
-        page.snack_bar = ft.SnackBar(
-            ft.Text("✅ Sincronizado correctamente"),
-            bgcolor=ft.Colors.GREEN_600,
-            duration=4000,
+        page.open(
+            ft.SnackBar(
+                content=ft.Text("✅ Sincronizado correctamente"),
+                bgcolor=ft.Colors.GREEN_600,
+                duration=4000
+            )
         )
-        page.snack_bar.open()
 
     btn_sync.on_click = btn_sincronizar
 

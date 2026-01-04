@@ -76,9 +76,20 @@ def si_no(value):
 
 
 def money_to_int(value):
-    if not value:
+    if value is None:
         return 0
-    return int(float(value.replace(",", "")))
+
+    if isinstance(value, (int, float)):
+        return int(value)
+
+    if isinstance(value, str):
+        value = value.strip()
+        if value == "":
+            return 0
+        return int(float(value.replace(",", "")))
+
+    return 0
+
 
 
 def safe_int(value):
@@ -225,12 +236,12 @@ def evaluar_resultado(tabla_parentesco, tabla_vehiculos,
         ingreso_mensual = float(fila.get("ingreso_mensual", 0))
 
     # Sumar gastos del formulario
-    gasto_vivienda = float(datos_pago_vivienda or 0)
-    gasto_agua = float(datos_pago_agua or 0)
-    gasto_luz = float(datos_pago_luz or 0)
-    gasto_internet = float(datos_pago_internet or 0)
-    gasto_tv = float(datos_tv_pago or 0)
-    gasto_viveres = float(datos_gastos_viveres_alimentacion or 0)
+    gasto_vivienda = money_to_int(datos_pago_vivienda or 0)
+    gasto_agua = money_to_int(datos_pago_agua or 0)
+    gasto_luz = money_to_int(datos_pago_luz or 0)
+    gasto_internet = money_to_int(datos_pago_internet or 0)
+    gasto_tv = money_to_int(datos_tv_pago or 0)
+    gasto_viveres = money_to_int(datos_gastos_viveres_alimentacion or 0)
 
     total_gastos = gasto_vivienda + gasto_agua + gasto_luz + gasto_internet + gasto_tv + gasto_viveres
     diferencia = ingreso_mensual - total_gastos
