@@ -86,40 +86,7 @@ def obtener_familiares(cursor, id_datos_generales):
 
     return familiares
 
-def buscar_item_catalogo(id_item, db_path=DB_PATH):
-    """
-    Devuelve un diccionario con los datos de un item del catálogo por id_item
-    """
-    conn = sqlite3.connect(db_path)
-    conn.row_factory = sqlite3.Row  # para obtener diccionarios
-    cursor = conn.cursor()
-    try:
-        cursor.execute("""
-            SELECT *
-            FROM tbl_item_catalogo
-            WHERE id_item = ?
-            AND itc_estado = 1
-        """, (id_item,))
-        row = cursor.fetchone()
-        if row:
-            return dict(row)
-        return None
-    finally:
-        conn.close()
 
-def obtener_tipo_parroquia(cursor, parroquia_id):
-    if not parroquia_id:
-        return None
-
-    itc = buscar_item_catalogo(parroquia_id)
-    if not itc:
-        return None
-
-    if 'URB' in itc['itc_codigo']:
-        return buscar_id_catalogo(cursor, 'Urbana', 38)
-    elif 'RURAL' in itc['itc_codigo']:
-        return buscar_id_catalogo(cursor, 'Rural', 38)
-    return None
 
 
 
@@ -189,7 +156,6 @@ def sincronizar_encuestas():
             canton_id = buscar_id_catalogo(cursor, data.get("datos_canton"), 19)
             parroquia_id = buscar_id_catalogo(cursor, data.get("datos_parroquias"), 20)
             
-            tipo_parroquia_id = obtener_tipo_parroquia(cursor, parroquia_id)
 
 
 
@@ -204,7 +170,9 @@ def sincronizar_encuestas():
                 "provincia": provincia_id,
                 "canton": canton_id,
                 "parroquia": parroquia_id,
-                "tipo_parroquia": tipo_parroquia_id,
+                "tipo_parroquia": data.get("datos_tipo_parroquias"),
+
+
 
                 "datos_comunidades": data.get("datos_comunidades"),
                 "datos_barrios": data.get("datos_barrios"),
