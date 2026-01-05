@@ -11,6 +11,7 @@ import os
 import sqlite3
 
 
+
 def main(page: ft.Page):
     page.title = "Formulario de Datos Generales"
     page.scroll = "auto"
@@ -110,6 +111,7 @@ def main(page: ft.Page):
             "datos_lugares_viveres": 31,
         }
 
+    
         def map_catalogo(valor, catalogo_id):
             ids = get_item_ids_flexible(valor, catalogo_id)
             return ids[0] if ids else 0
@@ -137,12 +139,23 @@ def main(page: ft.Page):
             **data_vivienda,
         }
         
-        
-        
+
         print(">>> DATA ARMADA:", data)
         
-        
+                # 🔍 VALIDAR CÉDULA CONTRA API (ANTES DE GUARDAR)
+        cedula = data.get("datos_cedula_voluntario")
 
+        existe, mensaje = validar_cedula_api(cedula)
+
+        if not existe:
+            page.open(
+                ft.SnackBar(
+                    content=ft.Text(mensaje),
+                    bgcolor=ft.Colors.RED_600,
+                    duration=4000,
+                )
+            )
+            return  # ⛔ NO guarda, NO continúa
         
         # Datos de vehículos
         tabla_vehiculos_data = [
@@ -168,6 +181,7 @@ def main(page: ft.Page):
         criterioMensaje.value = mensaje_criterio
         criterioMensaje.update()
 
+        
         # Guardar en DB
         try:
             last_id = insert_datos_generales(data, tablaVehiculos)

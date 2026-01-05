@@ -150,6 +150,9 @@ def get_item_ids_flexible(nombre_item: str, id_catalogo: int, db_path=DB_PATH) -
     """
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
+    if nombre_item is None:
+        return []  # o lo que tenga sentido cuando no haya valor
+    nombre_item = nombre_item.strip()
     try:
         cursor.execute("""
             SELECT id_item
@@ -290,3 +293,20 @@ def evaluar_resultado(tabla_parentesco, tabla_vehiculos,
     # Retornar resultado para actualizar la UI
     return resultado, mensaje
 
+API_URL = "http://192.168.0.105/bancoAlimentos/sync-encuesta/validar-cedula"
+
+
+def validar_cedula_api(cedula: str):
+    try:
+        with httpx.Client(timeout=5.0) as client:
+            r = client.post(API_URL, json={"cedula": cedula})
+
+        data = r.json()
+
+        if r.status_code != 200:
+            return False, data.get("message", "Error al validar cédula")
+
+        return True, data.get("message", "Cédula válida")
+
+    except Exception as e:
+        return False, f"Error de conexión: {e}"
