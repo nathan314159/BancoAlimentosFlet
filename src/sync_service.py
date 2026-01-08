@@ -9,8 +9,8 @@ from helper import *
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(BASE_DIR, "app.db")
 # API_URL = "http://localhost/bancoAlimentos/sync-encuesta"
-API_URL = "http://192.168.0.105/bancoAlimentos/sync-encuesta"
-
+API_URL = "http://192.168.0.105/bancoAlimentos/sync-encuesta" # ip casa
+# API_URL = "http://172.16.161.121/bancoAlimentos/sync-encuesta" # ip U Catolica
 
 
 # -------------------------
@@ -169,6 +169,7 @@ def sincronizar_encuestas():
 
                 "provincia": provincia_id,
                 "canton": canton_id,
+                "canton_nombre": data.get("datos_canton"),
                 "parroquia": parroquia_id,
                 "tipo_parroquia": data.get("datos_tipo_parroquias"),
 
@@ -203,6 +204,8 @@ def sincronizar_encuestas():
                 "datos_cantidad_celulare": data.get("datos_cantidad_celulare"),
                 "datos_plan_celular": si_no(data.get("datos_plan_celular")),
                 "datos_observacion": data.get("datos_observacion"),
+                "datos_resultado": data.get("datos_resultado"),
+                "datos_resultado_sistema": data.get("datos_resultado_sistema"),
                 "datos_consentimiento": data.get("datos_consentimiento"),
 
                 "familiares": familiares

@@ -310,3 +310,4 @@ def validar_cedula_api(cedula: str):
 
     except Exception as e:
         return False, f"Error de conexión: {e}"
+    
