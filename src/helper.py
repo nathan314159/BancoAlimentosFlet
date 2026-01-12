@@ -296,18 +296,33 @@ def evaluar_resultado(tabla_parentesco, tabla_vehiculos,
 API_URL = "http://192.168.0.105/bancoAlimentos/sync-encuesta/validar-cedula"
 
 
+# def validar_cedula_api(cedula: str):
+#     try:
+#         with httpx.Client(timeout=5.0) as client:
+#             r = client.post(API_URL, json={"cedula": cedula})
+
+#         data = r.json()
+
+#         if r.status_code != 200:
+#             return False, data.get("message", "Error al validar cédula")
+
+#         return True, data.get("message", "Cédula válida")
+
+#     except Exception as e:
+#         return False, f"Error de conexión: {e}"
+    
 def validar_cedula_api(cedula: str):
     try:
-        with httpx.Client(timeout=5.0) as client:
+        with httpx.Client(timeout=3.0) as client:
             r = client.post(API_URL, json={"cedula": cedula})
 
         data = r.json()
 
         if r.status_code != 200:
-            return False, data.get("message", "Error al validar cédula")
+            return False, data.get("message", "Cédula inválida")
 
         return True, data.get("message", "Cédula válida")
 
-    except Exception as e:
-        return False, f"Error de conexión: {e}"
-    
+    except Exception:
+        # 🔴 NO bloquear el flujo
+        return True, "Validación omitida (sin conexión)"
