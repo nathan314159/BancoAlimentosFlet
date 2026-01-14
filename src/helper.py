@@ -220,30 +220,41 @@ def safe_float(value):
         return 0.0
 
 
-def evaluar_resultado(tabla_parentesco, tabla_vehiculos,
-                      datos_pago_vivienda, datos_pago_agua,
-                      datos_pago_luz, datos_pago_internet,
-                      datos_tv_pago, datos_gastos_viveres_alimentacion,
-                      id_datos_generales):
+def evaluar_resultado(
+    tabla_parentesco,
+    tabla_vehiculos,
+    datos_pago_vivienda,
+    datos_pago_agua,
+    datos_pago_luz,
+    datos_pago_internet,
+    datos_tv_pago,
+    datos_gastos_viveres_alimentacion,
+    id_datos_generales
+):
     """
     Evalúa si la persona/familia aprueba según ingreso, gastos y vehículos.
-    Retorna: resultado (Aprobado/No aprobado), mensaje explicativo
+    Retorna: resultado (Aprobado / No aprobado), mensaje explicativo
     """
 
-    # Inicializar variables
-    ingreso_mensual = 0
-    total_gastos = 0
-    diferencia = 0
-    tiene_vehiculo_bueno_o_regular = False
-    mensaje = ""
+    # -----------------------------
+    # INGRESO MENSUAL
+    # -----------------------------
+    ingreso_mensual = 0.0
 
-    # Obtener ingreso mensual del primer registro de parentesco
     if tabla_parentesco and len(tabla_parentesco) > 0:
         fila = tabla_parentesco[0]
-        # Asegúrate de que 'ingreso_mensual' exista en la tabla_parentesco
-        ingreso_mensual = float(fila.get("ingreso_mensual", 0))
+        ingreso_mensual = float(fila.get("ingreso_mensual", 0) or 0)
 
-    # Sumar gastos del formulario
+    # Validación crítica
+    if ingreso_mensual <= 0:
+        return (
+            "No aprobado",
+            "No se pudo determinar un ingreso mensual válido"
+        )
+
+    # -----------------------------
+    # GASTOS
+    # -----------------------------
     gasto_vivienda = money_to_int(datos_pago_vivienda or 0)
     gasto_agua = money_to_int(datos_pago_agua or 0)
     gasto_luz = money_to_int(datos_pago_luz or 0)
@@ -251,31 +262,62 @@ def evaluar_resultado(tabla_parentesco, tabla_vehiculos,
     gasto_tv = money_to_int(datos_tv_pago or 0)
     gasto_viveres = money_to_int(datos_gastos_viveres_alimentacion or 0)
 
-    total_gastos = gasto_vivienda + gasto_agua + gasto_luz + gasto_internet + gasto_tv + gasto_viveres
+    total_gastos = (
+        gasto_vivienda +
+        gasto_agua +
+        gasto_luz +
+        gasto_internet +
+        gasto_tv +
+        gasto_viveres
+    )
+
     diferencia = ingreso_mensual - total_gastos
 
-    # Evaluar vehículos
-    for fila in tabla_vehiculos:
-        estado = fila.get("datos_estado_transporte", "").strip()
-        if estado in ["Bueno", "Regular"]:
+    # -----------------------------
+    # VEHÍCULOS
+    # -----------------------------
+    tiene_vehiculo_bueno_o_regular = False
+
+    for fila in tabla_vehiculos or []:
+        estado = fila.get("datos_estado_transporte", "").strip().lower()
+        if estado in ("bueno", "regular"):
             tiene_vehiculo_bueno_o_regular = True
+            break
 
-    # Determinar resultado según algoritmo
-    if diferencia < 0:
+    # -----------------------------
+    # DEBUG (puedes borrar luego)
+    # -----------------------------
+    print("DEBUG → Ingreso mensual:", ingreso_mensual)
+    print("DEBUG → Total gastos:", total_gastos)
+    print("DEBUG → Diferencia:", diferencia)
+    print("DEBUG → Vehículo bueno/regular:", tiene_vehiculo_bueno_o_regular)
+
+    # -----------------------------
+    # REGLA DE NEGOCIO CORRECTA
+    # -----------------------------
+    if diferencia < 0 and not tiene_vehiculo_bueno_o_regular:
         resultado = "Aprobado"
-    elif tiene_vehiculo_bueno_o_regular:
-        resultado = "No aprobado"
     else:
-        resultado = "Aprobado"
-
+        resultado = "No aprobado"
 
     resultado_sistema = resultado
 
-    # Crear mensaje para criterio
-    mensaje = f"Los gastos {'exceden' if diferencia < 0 else 'no exceden'} al ingreso mensual"
-    mensaje += " y " + ("se detectan vehículos con estado regular o bueno" if tiene_vehiculo_bueno_o_regular else "no se detectan vehículos con estado regular o bueno")
+    # -----------------------------
+    # MENSAJE
+    # -----------------------------
+    mensaje = (
+        f"Los gastos {'exceden' if diferencia < 0 else 'no exceden'} "
+        f"al ingreso mensual"
+    )
+    mensaje += (
+        " y se detectan vehículos con estado regular o bueno"
+        if tiene_vehiculo_bueno_o_regular
+        else " y no se detectan vehículos con estado regular o bueno"
+    )
 
-    # Guardar resultado en la DB
+    # -----------------------------
+    # GUARDAR EN DB
+    # -----------------------------
     try:
         with sqlite3.connect("src/app.db") as conn:
             cursor = conn.cursor()
@@ -290,26 +332,14 @@ def evaluar_resultado(tabla_parentesco, tabla_vehiculos,
     except Exception as e:
         print("Error al actualizar la base de datos:", e)
 
-    # Retornar resultado para actualizar la UI
+    # -----------------------------
+    # RETORNO
+    # -----------------------------
     return resultado, mensaje
+
 
 API_URL = "http://192.168.0.105/bancoAlimentos/sync-encuesta/validar-cedula"
 
-
-# def validar_cedula_api(cedula: str):
-#     try:
-#         with httpx.Client(timeout=5.0) as client:
-#             r = client.post(API_URL, json={"cedula": cedula})
-
-#         data = r.json()
-
-#         if r.status_code != 200:
-#             return False, data.get("message", "Error al validar cédula")
-
-#         return True, data.get("message", "Cédula válida")
-
-#     except Exception as e:
-#         return False, f"Error de conexión: {e}"
     
 def validar_cedula_api(cedula: str):
     try:

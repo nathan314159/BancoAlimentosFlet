@@ -16,7 +16,11 @@ def main(page: ft.Page):
     page.title = "Formulario de Datos Generales"
     page.scroll = "auto"
     page.padding = 20
-
+    logo = ft.Image(
+        src="logo.png",
+        width=180,
+        fit=ft.ImageFit.CONTAIN,
+    )
     formulario_completo = ft.Column(visible=False)
 
     btn_sync = ft.ElevatedButton(text="🔄 Sincronizar", icon=ft.Icons.SYNC)
@@ -251,6 +255,10 @@ def main(page: ft.Page):
             expand=True,
             alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
             controls=[
+                ft.Row(
+                alignment=ft.MainAxisAlignment.CENTER,
+                controls=[logo],
+                ),
                 ft.Row(
                     alignment=ft.MainAxisAlignment.END,
                     controls=[btn_sync],
