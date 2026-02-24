@@ -1,83 +1,85 @@
-📌 Banco de Alimentos de Imbabura – Socioeconomic Data Management System
-
+📱 B.A.D.I. Mobile Survey App – Python Flet
 1️⃣ What is the purpose of this project?
 
-This project is a socioeconomic data collection and management system developed for the Banco de Alimentos de Imbabura (B.A.D.I.), a government-supported organization that assists low-income families.
-The purpose of the system is to:
+This project is a mobile data collection application developed using Python (Flet) for field workers of Banco de Alimentos de Imbabura (B.A.D.I.).
 
-Digitize the household survey process conducted by field employees
+The purpose of this application is to:
 
-Standardize data collection across provinces and cantons
+Digitally collect household survey data in the field
 
-Structure beneficiary information in a relational database
+Provide a structured and dynamic form interface
 
-Support decision-making based on accurate and organized data
+Store data locally using SQLite
 
-Prepare validated data for future deployment and production use
+Synchronize collected data with a centralized MySQL database via REST API
 
-It replaces manual or paper-based surveys with a structured digital workflow.
+Ensure reliable and consistent data submission
+
+The app serves as the mobile client of the larger B.A.D.I. data management system.
 
 2️⃣ What problem does it solve?
 
-Before this system, the data collection process faced several challenges:
+Field data collection presents several operational challenges:
 
-Manual and inconsistent data collection
+Paper-based surveys are slow and error-prone
 
-Human error
+Lack of offline capability in rural areas
 
-Incomplete forms
+Delays in transferring data to central systems
 
-Inconsistent formats
+Risk of data loss
 
-Difficulty validating information
+Inconsistent field validation
 
-No centralized database
+This mobile application solves these problems by:
 
-No real-time validation
+Providing structured digital forms
 
-Difficulty generating reports
+Enabling local SQLite storage for temporary offline persistence
 
-Lack of data traceability
+Validating data before submission
 
-Limited scalability
+Synchronizing securely with the backend system through API communication
 
 3️⃣ Tech Stack
 
-Backend: PHP (CodeIgniter)
+Mobile Framework: Python (Flet)
 
-Frontend: JavaScript
+Local Database: SQLite
 
-Database: MySQL
+Backend API: PHP (CodeIgniter)
 
-Mobile: Python (Flet)
+Central Database: MySQL
+
+Communication: REST API (JSON)
 
 Version Control: Git & GitHub
 
 4️⃣ Key Features
 
-Dynamic household member registration (supports unlimited members)
+Dynamic household registration form
 
-Hierarchical geographic selection (Province → Canton → Parish)
+Conditional input fields based on survey logic
 
-Conditional survey logic
+Local SQLite storage for offline capability
 
-Role-based authentication
+API-based synchronization with MySQL server
 
-Data validation and integrity enforcement
+Data validation before submission
 
-REST API integration between web and mobile
+User authentication
 
 5️⃣ Technical Challenges Solved
 
-Designed a relational schema to handle variable household sizes (1–10+ members)
+Implemented local-first architecture using SQLite
 
-Implemented dependent dropdown logic (Province → Canton → Parish)
+Designed API integration for reliable data synchronization
 
-Built conditional form flows based on user selections
+Managed JSON serialization/deserialization between mobile and backend
 
-Developed REST API communication between web and mobile platforms
+Handled relational data submission (household + multiple members)
 
-Ensured data integrity through validation rules
+Ensured consistency between local and remote databases
 
 6️⃣ Methodology
 ![image alt](https://github.com/nathan314159/bancoAlimentos/blob/c0a38eb5b3efd1f07f61f5bcda81b7f42c3666de/metodologia.pptx.png)
