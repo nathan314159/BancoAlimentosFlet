@@ -1,81 +1,95 @@
-# FirstFletApp app
+📌 Banco de Alimentos de Imbabura – Socioeconomic Data Management System
 
-## Run the app
+1️⃣ What is the purpose of this project?
 
-### uv
+This project is a socioeconomic data collection and management system developed for the Banco de Alimentos de Imbabura (B.A.D.I.), a government-supported organization that assists low-income families.
+The purpose of the system is to:
 
-Run as a desktop app:
+Digitize the household survey process conducted by field employees
 
-```
-uv run flet run
-```
+Standardize data collection across provinces and cantons
 
-Run as a web app:
+Structure beneficiary information in a relational database
 
-```
-uv run flet run --web
-```
+Support decision-making based on accurate and organized data
 
-### Poetry
+Prepare validated data for future deployment and production use
 
-Install dependencies from `pyproject.toml`:
+It replaces manual or paper-based surveys with a structured digital workflow.
 
-```
-poetry install
-```
+2️⃣ What problem does it solve?
 
-Run as a desktop app:
+Before this system, the data collection process faced several challenges:
 
-```
-poetry run flet run
-```
+Manual and inconsistent data collection
 
-Run as a web app:
+Human error
 
-```
-poetry run flet run --web
-```
+Incomplete forms
 
-For more details on running the app, refer to the [Getting Started Guide](https://flet.dev/docs/getting-started/).
+Inconsistent formats
 
-## Build the app
+Difficulty validating information
 
-### Android
+No centralized database
 
-```
-flet build apk -v
-```
+No real-time validation
 
-For more details on building and signing `.apk` or `.aab`, refer to the [Android Packaging Guide](https://flet.dev/docs/publish/android/).
+Difficulty generating reports
 
-### iOS
+Lack of data traceability
 
-```
-flet build ipa -v
-```
+Limited scalability
 
-For more details on building and signing `.ipa`, refer to the [iOS Packaging Guide](https://flet.dev/docs/publish/ios/).
+3️⃣ Tech Stack
 
-### macOS
+Backend: PHP (CodeIgniter)
 
-```
-flet build macos -v
-```
+Frontend: JavaScript
 
-For more details on building macOS package, refer to the [macOS Packaging Guide](https://flet.dev/docs/publish/macos/).
+Database: MySQL
 
-### Linux
+Mobile: Python (Flet)
 
-```
-flet build linux -v
-```
+Version Control: Git & GitHub
 
-For more details on building Linux package, refer to the [Linux Packaging Guide](https://flet.dev/docs/publish/linux/).
+4️⃣ Key Features
 
-### Windows
+Dynamic household member registration (supports unlimited members)
 
-```
-flet build windows -v
-```
+Hierarchical geographic selection (Province → Canton → Parish)
 
-For more details on building Windows package, refer to the [Windows Packaging Guide](https://flet.dev/docs/publish/windows/).
+Conditional survey logic
+
+Role-based authentication
+
+Data validation and integrity enforcement
+
+REST API integration between web and mobile
+
+5️⃣ Technical Challenges Solved
+
+Designed a relational schema to handle variable household sizes (1–10+ members)
+
+Implemented dependent dropdown logic (Province → Canton → Parish)
+
+Built conditional form flows based on user selections
+
+Developed REST API communication between web and mobile platforms
+
+Ensured data integrity through validation rules
+
+6️⃣ Methodology
+![image alt](https://github.com/nathan314159/bancoAlimentos/blob/c0a38eb5b3efd1f07f61f5bcda81b7f42c3666de/metodologia.pptx.png)
+
+7️⃣ System Architecture
+![image alt](https://github.com/nathan314159/bancoAlimentos/blob/768df928da3f0f4f14d5475d513dacebcbe304f5/arquitectura.pptx.png)
+8️⃣ Screenshots
+![image alt](https://github.com/nathan314159/bancoAlimentos/blob/c0a38eb5b3efd1f07f61f5bcda81b7f42c3666de/celular%20badi.pptx.png)
+![image alt](https://github.com/nathan314159/bancoAlimentos/blob/c0a38eb5b3efd1f07f61f5bcda81b7f42c3666de/dashboard.pptx.png
+)
+![image alt](https://github.com/nathan314159/bancoAlimentos/blob/c0a38eb5b3efd1f07f61f5bcda81b7f42c3666de/login.pptx.png
+)
+
+
+
