@@ -23,61 +23,41 @@ The app serves as the mobile client of the larger B.A.D.I. data management syste
 Field data collection presents several operational challenges:
 
 - Paper-based surveys are slow and error-prone
-
 - Lack of offline capability in rural areas
-
 - Delays in transferring data to central systems
-
 - Risk of data loss
-
 - Inconsistent field validation
 
 This mobile application addresses these challenges by:
 
 - Providing structured digital forms
-
 - Enabling local SQLite storage for temporary offline persistence
-
 - Validating data before submission
-
 - Synchronizing securely with the backend system through API communication
 
 ## Tech Stack
 
 - Mobile Framework: Python (Flet)
-
 - Local Database: SQLite
-
 - Backend API: PHP (CodeIgniter)
-
 - Central Database: MySQL
-
 - Communication: REST API (JSON)
-
 - Version Control: Git & GitHub
 
 ## Key Features
 
 - Dynamic household registration form
-
 - Conditional input fields based on survey logic
-
 - Local SQLite storage for offline capability
-
 - API-based synchronization with MySQL server
-
 - Data validation before submission
 
 ## Technical Challenges Solved
 
 - Implemented local-first architecture using SQLite
-
 - Designed API integration for reliable data synchronization
-
 - Managed JSON serialization/deserialization between mobile and backend
-
 - Handled relational data submission (household + multiple members)
-
 - Ensured consistency between local and remote databases
 
 ## Installation
