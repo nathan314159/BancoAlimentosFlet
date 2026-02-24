@@ -1,98 +1,110 @@
-📱 B.A.D.I. Mobile Survey App – Python Flet
+# B.A.D.I. Mobile Survey App – Python Flet
 
-1️⃣ What is the purpose of this project?
+## Python Flet Field Data Collection Client
+
+A mobile-first data collection application built with Python (Flet) that enables field workers to collect household socioeconomic surveys offline and synchronize them with a centralized CodeIgniter/MySQL backend via REST API.
+
+## Purpose
 
 This project is a mobile data collection application developed using Python (Flet) for field workers of Banco de Alimentos de Imbabura (B.A.D.I.).
 
 The purpose of this application is to:
 
-Digitally collect household survey data in the field
-
-Provide a structured and dynamic form interface
-
-Store data locally using SQLite
-
-Synchronize collected data with a centralized MySQL database via REST API
-
-Ensure reliable and consistent data submission
+- Digitally collect household survey data in the field
+- Provide a structured and dynamic form interface
+- Store data locally using SQLite
+- Synchronize collected data with a centralized MySQL database via REST API
+- Ensure reliable and consistent data submission
 
 The app serves as the mobile client of the larger B.A.D.I. data management system.
 
-2️⃣ What problem does it solve?
+## Problem Statement
 
 Field data collection presents several operational challenges:
 
-Paper-based surveys are slow and error-prone
+- Paper-based surveys are slow and error-prone
 
-Lack of offline capability in rural areas
+- Lack of offline capability in rural areas
 
-Delays in transferring data to central systems
+- Delays in transferring data to central systems
 
-Risk of data loss
+- Risk of data loss
 
-Inconsistent field validation
+- Inconsistent field validation
 
-This mobile application solves these problems by:
+This mobile application addresses these challenges by:
 
-Providing structured digital forms
+- Providing structured digital forms
 
-Enabling local SQLite storage for temporary offline persistence
+- Enabling local SQLite storage for temporary offline persistence
 
-Validating data before submission
+- Validating data before submission
 
-Synchronizing securely with the backend system through API communication
+- Synchronizing securely with the backend system through API communication
 
-3️⃣ Tech Stack
+## Tech Stack
 
-Mobile Framework: Python (Flet)
+- Mobile Framework: Python (Flet)
 
-Local Database: SQLite
+- Local Database: SQLite
 
-Backend API: PHP (CodeIgniter)
+- Backend API: PHP (CodeIgniter)
 
-Central Database: MySQL
+- Central Database: MySQL
 
-Communication: REST API (JSON)
+- Communication: REST API (JSON)
 
-Version Control: Git & GitHub
+- Version Control: Git & GitHub
 
-4️⃣ Key Features
+## Key Features
 
-Dynamic household registration form
+- Dynamic household registration form
 
-Conditional input fields based on survey logic
+- Conditional input fields based on survey logic
 
-Local SQLite storage for offline capability
+- Local SQLite storage for offline capability
 
-API-based synchronization with MySQL server
+- API-based synchronization with MySQL server
 
-Data validation before submission
+- Data validation before submission
 
-User authentication
+## Technical Challenges Solved
 
-5️⃣ Technical Challenges Solved
+- Implemented local-first architecture using SQLite
 
-Implemented local-first architecture using SQLite
+- Designed API integration for reliable data synchronization
 
-Designed API integration for reliable data synchronization
+- Managed JSON serialization/deserialization between mobile and backend
 
-Managed JSON serialization/deserialization between mobile and backend
+- Handled relational data submission (household + multiple members)
 
-Handled relational data submission (household + multiple members)
+- Ensured consistency between local and remote databases
 
-Ensured consistency between local and remote databases
+## Installation
 
-6️⃣ Methodology
+## Installation
+
+```bash
+git clone https://github.com/nathan314159/badi-mobile-app.git
+cd badi-mobile-app
+pip install -r requirements.txt
+flet run main.py
+```
+
+## Methodology
 ![image alt](https://github.com/nathan314159/bancoAlimentos/blob/c0a38eb5b3efd1f07f61f5bcda81b7f42c3666de/metodologia.pptx.png)
 
-7️⃣ System Architecture
+## System Architecture
 ![image alt](https://github.com/nathan314159/bancoAlimentos/blob/768df928da3f0f4f14d5475d513dacebcbe304f5/arquitectura.pptx.png)
-8️⃣ Screenshots
+## Screenshots
 ![image alt](https://github.com/nathan314159/bancoAlimentos/blob/c0a38eb5b3efd1f07f61f5bcda81b7f42c3666de/celular%20badi.pptx.png)
 ![image alt](https://github.com/nathan314159/bancoAlimentos/blob/c0a38eb5b3efd1f07f61f5bcda81b7f42c3666de/dashboard.pptx.png
 )
 ![image alt](https://github.com/nathan314159/bancoAlimentos/blob/c0a38eb5b3efd1f07f61f5bcda81b7f42c3666de/login.pptx.png
 )
 
+## Project Status
+This mobile application is a functional prototype designed for academic and portfolio purposes.
+Future improvements may include background synchronization queues, improved error handling, push updates, and production deployment.
 
 
